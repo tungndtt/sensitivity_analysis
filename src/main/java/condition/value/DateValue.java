@@ -1,5 +1,7 @@
 package condition.value;
 
+import java.util.Date;
+
 public class DateValue extends Value {
 
 	public DateValue(Object value) {
@@ -8,14 +10,16 @@ public class DateValue extends Value {
 
 	@Override
 	public Object increase(Object... objects) {
-		// TODO Auto-generated method stub
-		return null;
+		Number unit = (Number) objects[0];
+		Date date = (Date) this.getValue();
+		return new Date(date.getTime() + unit.longValue()*60000);
 	}
 
 	@Override
 	public Object decrease(Object... objects) {
-		// TODO Auto-generated method stub
-		return null;
+		Number unit = (Number) objects[0];
+		Date date = (Date) this.getValue();
+		return new Date(date.getTime() - unit.longValue()*60000);
 	}
 
 	@Override

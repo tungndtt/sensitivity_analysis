@@ -65,7 +65,7 @@ public class CaseInfo {
 
     public static CaseInfo parseFrom(ResultSet resultSet) {
         try {
-            int caseId = resultSet.getInt("caseId");
+            int caseId = resultSet.getInt("caseid");
             int numberOfActivities = resultSet.getInt("number_of_activities");
             int numberOfResources = resultSet.getInt("number_of_resources");
             double duration = resultSet.getDouble("duration");

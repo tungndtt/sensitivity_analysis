@@ -1,8 +1,8 @@
 package condition.value;
 
-public class NummericalValue extends Value {
-	public NummericalValue(Number value) {
-		super(value, ValueType.NUMMERICAL);
+public class NumericalValue extends Value {
+	public NumericalValue(Object value) {
+		super(value, ValueType.NUMERICAL);
 	}
 
 	@Override

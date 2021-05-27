@@ -1,7 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d696aaa1-ab6b-4e32-876a-9ff82bd7db49" name="Default Changelist" comment="" />
+    <list default="true" id="d696aaa1-ab6b-4e32-876a-9ff82bd7db49" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/Test.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/metric/CasePerVariantMetric.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/metric/CaseVarianceMetric.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/metric/Metric.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/AdaptiveVariation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/AverageVariation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/NaiveVariation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/SetVariation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/Variation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/VariationType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/Tung_Doan.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/Tung_Doan.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/DateValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/DateValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/IntervalValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/IntervalValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/NummericalValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/NumericalValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/ValueType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/ValueType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/main/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/analysis/CaseInfoQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/analysis/CaseInfoQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/common/CaseIdQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/common/CaseIdQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/common/CommonQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/common/CommonQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/common/DurationPerCaseQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/common/DurationPerCaseQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/common/ResourceQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/common/ResourceQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/common/TimestampQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/common/TimestampQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/model/AvgTransitionTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/model/AvgTransitionTime.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/model/CaseInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/model/CaseInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/xlog/XLogUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/xlog/XLogUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/condition/value/DateValue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/condition/value/DateValue.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/condition/value/NummericalValue.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/condition/value/ValueType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/condition/value/ValueType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/main/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/Application.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/Query.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/common/CaseQuery.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/common/DurationPerCaseQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/common/DurationPerCaseQuery.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/common/TimestampQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/common/TimestampQuery.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/xlog/XLogUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/xlog/XLogUtil.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,14 +50,19 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
   </component>
   <component name="ProjectId" id="1t4YPjZ8G8sLzFqkD2vBvvmz41i" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -28,12 +70,13 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../processexplorer-main" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Application">
     <configuration name="Application" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="main.Application" />
       <module name="sensitive_analysis" />
@@ -47,9 +90,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="analysis.Test" />
+      <module name="sensitive_analysis" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="analysis.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Application" />
+        <item itemvalue="Application.Test" />
       </list>
     </recent_temporary>
   </component>
@@ -74,14 +131,14 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="552" y="179" key="#Project_Structure" timestamp="1622029946577">
+    <state x="552" y="179" key="#Project_Structure" timestamp="1622117783963">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="179" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1622029946577" />
-    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1622063927103">
+    <state x="552" y="179" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1622117783963" />
+    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1622136203787">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1622063927103" />
+    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1622136203787" />
     <state x="508" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1622058363990">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -90,22 +147,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="268" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1622030614068" />
-    <state width="1877" height="215" key="GridCell.Tab.0.bottom" timestamp="1622052518408">
+    <state x="740" y="276" key="FileChooserDialogImpl" timestamp="1622125460323">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1622052518408" />
-    <state width="1877" height="215" key="GridCell.Tab.0.center" timestamp="1622052518408">
+    <state x="740" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1622125460323" />
+    <state width="1877" height="215" key="GridCell.Tab.0.bottom" timestamp="1622140584651">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1622052518408" />
-    <state width="1877" height="215" key="GridCell.Tab.0.left" timestamp="1622052518408">
+    <state width="1877" height="215" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1622140584651" />
+    <state width="1877" height="215" key="GridCell.Tab.0.center" timestamp="1622140584651">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1622052518408" />
-    <state width="1877" height="215" key="GridCell.Tab.0.right" timestamp="1622052518408">
+    <state width="1877" height="215" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1622140584651" />
+    <state width="1877" height="215" key="GridCell.Tab.0.left" timestamp="1622140584651">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1622052518408" />
+    <state width="1877" height="215" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1622140584651" />
+    <state width="1877" height="215" key="GridCell.Tab.0.right" timestamp="1622140584651">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="215" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1622140584651" />
     <state x="490" y="176" key="Maven.ArtifactSearchDialog" timestamp="1622030051732">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -1,7 +1,7 @@
 package condition.value;
 
 public enum ValueType {
-	NUMMERICAL,
+	NUMERICAL,
 	DATE,
 	INTERVAL,
 	SET

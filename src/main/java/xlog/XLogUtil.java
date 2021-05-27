@@ -168,10 +168,10 @@ public class XLogUtil {
                     for(XEvent event : trace) {
                         insertStatement.setObject(1, caseId);
                         insertStatement.setObject(2, event.getAttributes().containsKey(XConceptExtension.KEY_NAME) ? event.getAttributes().get(XConceptExtension.KEY_NAME).toString() : null);
-                        java.sql.Date time_stamp = null;
+                        java.sql.Timestamp time_stamp = null;
                         if(event.getAttributes().containsKey(XTimeExtension.KEY_TIMESTAMP)) {
                             XAttributeTimestamp xAttributeTimestamp = (XAttributeTimestamp)(event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
-                            time_stamp = new java.sql.Date(xAttributeTimestamp.getValue().getTime());
+                            time_stamp = new java.sql.Timestamp(xAttributeTimestamp.getValue().getTime());
                         }
                         insertStatement.setObject(3,  time_stamp);
                         insertStatement.setObject(4, event.getAttributes().containsKey(XOrganizationalExtension.KEY_RESOURCE) ? event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE).toString() : null);

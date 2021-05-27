@@ -1,6 +1,9 @@
 package query.common;
 
+import analysis.variation.VariationType;
 import condition.Condition;
+
+import java.util.HashMap;
 
 public abstract class CommonQuery {
 	
@@ -9,6 +12,8 @@ public abstract class CommonQuery {
 	private String selectFrom;
 	
 	private Condition condition;
+
+	private HashMap<String, HashMap<VariationType, String>> attributeValueSetQueries;
 	
 	public CommonQuery(String queryName, String selectFrom) {
 		this.queryName = queryName;
@@ -44,6 +49,29 @@ public abstract class CommonQuery {
 	public Condition getCondition() {
 		return this.condition;
 	}
+
+	protected void setAttributeValueSetQueries(HashMap<String, HashMap<VariationType, String>> attributeValueSetQueries) {
+		this.attributeValueSetQueries = attributeValueSetQueries;
+	}
 	
 	public abstract String getQuery();
+
+	public boolean supportVariationType(String attribute, VariationType variationType) {
+		if(this.attributeValueSetQueries.containsKey(attribute)){
+			HashMap<VariationType, String> e = this.attributeValueSetQueries.get(attribute);
+			return e.containsKey(variationType);
+		}
+		else {
+			return false;
+		}
+	}
+
+	public String getQueryForVariation(String attribute, VariationType variationType) {
+		if(this.attributeValueSetQueries.containsKey(attribute)) {
+			if (this.attributeValueSetQueries.get(attribute).containsKey(variationType)) {
+				return this.attributeValueSetQueries.get(attribute).get(variationType);
+			}
+		}
+		return null;
+	}
 }

@@ -1,7 +1,13 @@
 package main;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import condition.ComparisionType;
+import query.common.TimestampQuery;
 import xlog.XLogUtil;
 
 public class Application {
@@ -12,8 +18,26 @@ public class Application {
 
     private static Connection dbConnection;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
         //boolean success = XLogUtil.insertIntoDatabase("C:/Users/Tung Doan/Downloads/log_IEEE.xes.gz");
+
+        /*
+        String tableName = "log_ieee";
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+        TimestampQuery caseIdQuery = new TimestampQuery(tableName, ft.parse("1949-01-26"), ComparisionType.LT);
+
+        try {
+            String query = caseIdQuery.getQuery();
+            System.out.println(query);
+            ResultSet resultSet = Application.getConnection().prepareStatement(query).executeQuery();
+            resultSet.next();
+            System.out.println(resultSet.getObject("activity"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+         */
+        Number a = 1231233214.6123235;
+        System.out.println(a.longValue());
     }
 
     private static boolean establishConnection() {

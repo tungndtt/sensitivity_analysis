@@ -32,7 +32,7 @@ public class AvgTransitionTime {
 
     public static AvgTransitionTime parseFrom(ResultSet resultSet) {
         try {
-            int caseId = resultSet.getInt("caseId");
+            int caseId = resultSet.getInt("caseid");
             double average_transition_time = resultSet.getDouble("average_transition");
 
             return new AvgTransitionTime(caseId, average_transition_time);
