@@ -36,8 +36,6 @@ public class Application {
             e.printStackTrace();
         }
          */
-        Number a = 1231233214.6123235;
-        System.out.println(a.longValue());
     }
 
     private static boolean establishConnection() {

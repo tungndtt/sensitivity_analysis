@@ -39,7 +39,7 @@ public class CaseInfo {
         this.numberOfActivities = numberOfActivities;
     }
 
-    public int getGetNumberOfResources() {
+    public int getNumberOfResources() {
         return getNumberOfResources;
     }
 

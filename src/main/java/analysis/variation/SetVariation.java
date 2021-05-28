@@ -1,5 +1,6 @@
 package analysis.variation;
 
+import condition.Condition;
 import query.common.CommonQuery;
 
 import java.sql.ResultSet;
@@ -36,5 +37,10 @@ public class SetVariation extends Variation{
             System.out.println(e);
             return null;
         }
+    }
+
+    @Override
+    public LinkedList<Pair> vary(String condition) {
+        return null;
     }
 }

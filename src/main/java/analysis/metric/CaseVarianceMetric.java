@@ -33,7 +33,7 @@ public class CaseVarianceMetric extends Metric{
                         CaseInfo caseInfo = CaseInfo.parseFrom(resultSet);
                         double[] info = new double[]{
                                 caseInfo.getNumberOfActivities(),
-                                caseInfo.getGetNumberOfResources(),
+                                caseInfo.getNumberOfResources(),
                                 caseInfo.getAverage_transition_time(),
                                 caseInfo.getDuration()
                         };
@@ -60,6 +60,7 @@ public class CaseVarianceMetric extends Metric{
     @Override
     public double calculateDiff(Object obj1, Object obj2) {
         double diff = 0;
+        int numberOfCases = 0;
         HashMap<Integer, double[]> o1 = (HashMap<Integer, double[]>) obj1;
         HashMap<Integer, double[]> o2 = (HashMap<Integer, double[]>) obj2;
 
@@ -68,25 +69,28 @@ public class CaseVarianceMetric extends Metric{
             if(o2.containsKey(caseId)) {
                 double[] v2 = o2.get(caseId);
                 for(int i=0; i<this.coefficients.length; i++) {
-                    diff += this.coefficients[i]*Math.abs(v1[i] - v2[i]);
+                    double avg = (v1[i] + v2[i])/2;
+                    diff += avg != 0 ? this.coefficients[i]*Math.abs(v1[i] - v2[i])/avg : 0;
                 }
             }
             else {
                 for(int i=0; i<this.coefficients.length; i++) {
-                    diff += this.coefficients[i]*v1[i];
+                    diff += v1[i] != 0 ? this.coefficients[i] : 0;
                 }
             }
+            ++numberOfCases;
         }
 
         for(int caseId : o2.keySet()) {
             if(!o1.containsKey(caseId)) {
                 double[] v2 = o1.get(caseId);
                 for(int i=0; i<this.coefficients.length; i++) {
-                    diff += this.coefficients[i]*v2[i];
+                    diff += v2[i] != 0 ? this.coefficients[i] : 0;
                 }
+                ++numberOfCases;
             }
         }
 
-        return diff;
+        return diff / numberOfCases;
     }
 }

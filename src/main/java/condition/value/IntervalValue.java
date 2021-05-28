@@ -11,7 +11,7 @@ public class IntervalValue extends Value{
 		Number left = (Number) objects[0];
 		Number right = (Number) objects[1];
 		Value[] interval = (Value[]) this.getValue();
-		return new IntervalValue(new Object[]{interval[0].increase(left), interval[1].increase(right)});
+		return new Object[]{interval[0].decrease(left), interval[1].increase(right)};
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class IntervalValue extends Value{
 		Number left = (Number) objects[0];
 		Number right = (Number) objects[1];
 		Value[] interval = (Value[]) this.getValue();
-		return new IntervalValue(new Object[]{interval[0].decrease(left), interval[1].decrease(right)});
+		return new Object[]{interval[0].increase(left), interval[1].decrease(right)};
 	}
 
 	@Override

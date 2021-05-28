@@ -6,9 +6,32 @@ import main.Application;
 import query.common.CommonQuery;
 
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public abstract class Variation {
+
+    protected class Pair {
+        private String condition;
+
+        private HashMap<String, Double> changingRates;
+
+        public Pair(String condition) {
+            this.condition = condition;
+        }
+
+        public String getCondition() {
+            return this.condition;
+        }
+
+        public void setChangingRate(HashMap<String, Double> changingRates) {
+            this.changingRates = changingRates;
+        }
+
+        public HashMap<String, Double> getChangingRate() {
+            return this.changingRates;
+        }
+    }
 
     private VariationType type;
 
@@ -74,5 +97,5 @@ public abstract class Variation {
         return Application.getConnection();
     }
 
-    //public abstract void run();
+    public abstract LinkedList<Pair> vary(String condition);
 }
