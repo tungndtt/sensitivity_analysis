@@ -1,13 +1,14 @@
 package analysis.metric;
 
 import main.Application;
+import query.analysis.AnalysisQuery;
 import query.common.CommonQuery;
 
 import java.sql.Connection;
 
 public abstract class Metric {
 
-    private CommonQuery commonQuery;
+    protected AnalysisQuery analysisQuery;
 
     private String metricType;
 
@@ -15,12 +16,14 @@ public abstract class Metric {
         this.metricType = metricType;
     }
 
-    public CommonQuery getCommonQuery() {
-        return commonQuery;
+    public void setCommonQuery(CommonQuery commonQuery) {
+        if(this.analysisQuery != null) {
+            this.analysisQuery.setCommonQuery(commonQuery);
+        }
     }
 
-    public void setCommonQuery(CommonQuery commonQuery) {
-        this.commonQuery = commonQuery;
+    public AnalysisQuery getAnalysisQuery() {
+        return this.analysisQuery;
     }
 
     public String getMetricType() {

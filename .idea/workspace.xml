@@ -2,29 +2,50 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d696aaa1-ab6b-4e32-876a-9ff82bd7db49" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/Pair.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analysis/Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/analysis/metric/CasePerVariantMetric.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/metric/CasePerVariantMetric.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analysis/metric/CaseVarianceMetric.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/metric/CaseVarianceMetric.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/analysis/metric/Metric.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/metric/Metric.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analysis/variation/AdaptiveVariation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/AdaptiveVariation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analysis/variation/AverageVariation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/AverageVariation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analysis/variation/NaiveVariation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/NaiveVariation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analysis/variation/SetVariation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/SetVariation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/analysis/variation/Variation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/analysis/variation/Variation.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/DateValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/DateValue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/IntervalValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/IntervalValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/NumericalValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/NumericalValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/SetValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/SetValue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/condition/value/Value.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/condition/value/Value.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/main/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/main/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/query/model/CaseInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/model/CaseInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/analysis/AnalysisQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/analysis/AnalysisQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/analysis/AvgTransitionTimeQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/analysis/AvgTransitionTimeQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/analysis/CaseInfoQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/analysis/CaseInfoQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/analysis/CasesPerVariantQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/analysis/CasesPerVariantQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/common/DurationPerCaseQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/common/DurationPerCaseQuery.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/query/common/TimestampQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/query/common/TimestampQuery.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/Test.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/Test.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/metric/CasePerVariantMetric.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/metric/CasePerVariantMetric.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/metric/CaseVarianceMetric.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/metric/CaseVarianceMetric.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/analysis/metric/Metric.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/metric/Metric.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/variation/AdaptiveVariation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/variation/AdaptiveVariation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/variation/AverageVariation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/variation/AverageVariation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/variation/NaiveVariation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/variation/NaiveVariation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/variation/SetVariation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/variation/SetVariation.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/analysis/variation/Variation$Pair.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/analysis/variation/Variation.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/analysis/variation/Variation.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/condition/value/DateValue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/condition/value/DateValue.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/condition/value/IntervalValue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/condition/value/IntervalValue.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/condition/value/NumericalValue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/condition/value/NumericalValue.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/condition/value/SetValue.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/condition/value/SetValue.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/condition/value/Value.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/condition/value/Value.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/main/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/main/Application.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/query/model/CaseInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/model/CaseInfo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/analysis/AnalysisQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/analysis/AnalysisQuery.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/analysis/AvgTransitionTimeQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/analysis/AvgTransitionTimeQuery.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/analysis/CaseInfoQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/analysis/CaseInfoQuery.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/analysis/CasesPerVariantQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/analysis/CasesPerVariantQuery.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/query/common/DurationPerCaseQuery.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/query/common/DurationPerCaseQuery.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -122,10 +143,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="179" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1622117783963" />
-    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1622203585359">
+    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1622302536686">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1622203585359" />
+    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1622302536686" />
     <state x="508" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1622058363990">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -138,22 +159,22 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="276" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1622125460323" />
-    <state width="1877" height="215" key="GridCell.Tab.0.bottom" timestamp="1622220962489">
+    <state width="1877" height="215" key="GridCell.Tab.0.bottom" timestamp="1622446861283">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1622220962489" />
-    <state width="1877" height="215" key="GridCell.Tab.0.center" timestamp="1622220962489">
+    <state width="1877" height="215" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1622446861283" />
+    <state width="1877" height="215" key="GridCell.Tab.0.center" timestamp="1622446861283">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1622220962489" />
-    <state width="1877" height="215" key="GridCell.Tab.0.left" timestamp="1622220962489">
+    <state width="1877" height="215" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1622446861283" />
+    <state width="1877" height="215" key="GridCell.Tab.0.left" timestamp="1622446861283">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1622220962489" />
-    <state width="1877" height="215" key="GridCell.Tab.0.right" timestamp="1622220962489">
+    <state width="1877" height="215" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1622446861283" />
+    <state width="1877" height="215" key="GridCell.Tab.0.right" timestamp="1622446861283">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="215" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1622220962489" />
+    <state width="1877" height="215" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1622446861283" />
     <state x="490" y="176" key="Maven.ArtifactSearchDialog" timestamp="1622030051732">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -162,9 +183,13 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="95" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1622031452475" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1622038985339">
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1622369616131">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1622038985339" />
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1622369616131" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1622446429930">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1622446429930" />
   </component>
 </project>

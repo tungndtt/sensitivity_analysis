@@ -19,7 +19,7 @@ public class Application {
     private static Connection dbConnection;
 
     public static void main(String[] args) throws ParseException {
-        //boolean success = XLogUtil.insertIntoDatabase("C:/Users/Tung Doan/Downloads/log_IEEE.xes.gz");
+        boolean success = XLogUtil.insertIntoDatabase("C:/Users/Tung Doan/Downloads/log_IEEE.xes.gz");
 
         /*
         String tableName = "log_ieee";

@@ -28,7 +28,7 @@ public class DurationPerCaseQuery extends CommonQuery {
         this.setCondition(condition);
     }
 
-    public DurationPerCaseQuery(String queryName, String selectFrom, double number, ComparisionType comparisionType) {
+    public DurationPerCaseQuery(String selectFrom, double number, ComparisionType comparisionType) {
         super("Duration per case comparision filter query", selectFrom);
         this.setAttributeValueSetQueriesHashMap();
 
@@ -40,7 +40,7 @@ public class DurationPerCaseQuery extends CommonQuery {
 
     @Override
     public String getQuery() {
-        return String.format("select * from %s as t1 right join (select distinct caseId from %s as t group by caseid having %s) as t2 on t1.caseId = t2.caseId",
+        return String.format("select t1.* from %s as t1 right join (select distinct caseId from %s as t group by caseid having %s) as t2 on t1.caseId = t2.caseId",
                 this.getSelectFrom(), this.getSelectFrom(), this.getCondition().getCondition());
     }
 
@@ -48,7 +48,7 @@ public class DurationPerCaseQuery extends CommonQuery {
         HashMap<VariationType, String> durationPerCaseQueries = new HashMap<>() {{
             put(VariationType.NAIVE, getMinMaxDurationPerCase());
             put(VariationType.AVERAGE, getAllDurationPerCase());
-            put(VariationType.ADAPTIVE, getAllDurationPerCase());
+            put(VariationType.ADAPTIVE, getMinMaxDurationPerCase());
         }};
         this.setAttributeValueSetQueries(
                 new HashMap<>() {{

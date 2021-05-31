@@ -13,6 +13,10 @@ public abstract class AnalysisQuery {
         this.commonQuery = commonQuery;
     }
 
+    public AnalysisQuery(String queryName) {
+        this.queryName = queryName;
+    }
+
     public String getQueryName() {
         return queryName;
     }

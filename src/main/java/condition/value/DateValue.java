@@ -9,17 +9,17 @@ public class DateValue extends Value {
 	}
 
 	@Override
-	public Object increase(Object... objects) {
+	public Value increase(Object... objects) {
 		Number unit = (Number) objects[0];
 		Date date = (Date) this.getValue();
-		return new Date(date.getTime() + unit.longValue()*60000);
+		return new DateValue(new Date(date.getTime() + unit.longValue()*60000));
 	}
 
 	@Override
-	public Object decrease(Object... objects) {
+	public Value decrease(Object... objects) {
 		Number unit = (Number) objects[0];
 		Date date = (Date) this.getValue();
-		return new Date(date.getTime() - unit.longValue()*60000);
+		return new DateValue(new Date(date.getTime() - unit.longValue()*60000));
 	}
 
 	@Override

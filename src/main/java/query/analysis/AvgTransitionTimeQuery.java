@@ -8,12 +8,16 @@ public class AvgTransitionTimeQuery extends AnalysisQuery {
         super("Average transition time between activities within case query", commonQuery);
     }
 
+    public AvgTransitionTimeQuery() {
+        super("Average transition time between activities within case query");
+    }
+
     @Override
     public String getQuery() {
         return String.format(
-                "select caseId, avg(transition_time) as average_transition from ("
-                + "select caseId, timestampdiff(minute, time_stamp, lead(time_stamp, 1) over(partition by caseId order by time_stamp)) as transition_time) from %s as t"
-                + ") as t group by caseId", "(" + this.getCommonQuery().getQuery() + ")"
+                "select caseid, avg(transition_time) as average_transition_time from ("
+                + "select caseid, (extract(epoch from lead(time_stamp, 1) over(partition by caseid order by time_stamp)) - extract(epoch from time_stamp))/60 as transition_time from %s as t"
+                + ") as t group by caseid", "(" + this.getCommonQuery().getQuery() + ")"
         );
     }
 }

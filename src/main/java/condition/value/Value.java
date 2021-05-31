@@ -27,9 +27,9 @@ public abstract class Value {
 		return this.value;
 	}
 	
-	public abstract Object increase(Object... objects);
+	public abstract Value increase(Object... objects);
 	
-	public abstract Object decrease(Object... objects);
+	public abstract Value decrease(Object... objects);
 	
 	public abstract String toString();
 }

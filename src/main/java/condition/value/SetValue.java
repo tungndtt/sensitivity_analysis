@@ -1,12 +1,11 @@
 package condition.value;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class SetValue extends Value {
 	
 	private SetElementType elementType;
+
 	
 	@SuppressWarnings("serial")
 	private static HashMap<SetElementType, String> formats = new HashMap<>() {{
@@ -23,20 +22,32 @@ public class SetValue extends Value {
 		return elementType;
 	}
 
-	public void setElementType(SetElementType elementType) {
-		this.elementType = elementType;
+	@Override
+	public Value increase(Object... objects) {
+		int unit = (Integer) objects[0];
+		List<Object> elements = (List<Object>) objects[1];
+		HashSet<Object> existed = (HashSet<Object>) objects[2];
+		List<Object> listElements = (List<Object>) this.getValue();
+
+		while(unit > 0 && elements.size() > 0) {
+			Object obj = elements.remove(0);
+			if(!existed.contains(obj)) {
+				listElements.add(obj);
+				--unit;
+			}
+		}
+		return this;
 	}
 
 	@Override
-	public Object increase(Object... objects) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Value decrease(Object... objects) {
+		int unit = (Integer) objects[0];
+		List<Object> listElements = (List<Object>) this.getValue();
 
-	@Override
-	public Object decrease(Object... objects) {
-		// TODO Auto-generated method stub
-		return null;
+		while(unit-- > 0) {
+			listElements.remove(0);
+		}
+		return this;
 	}
 
 	@SuppressWarnings("unchecked")

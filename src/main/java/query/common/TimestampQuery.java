@@ -49,7 +49,7 @@ public class TimestampQuery extends CommonQuery {
         HashMap<VariationType, String> timestampQueries = new HashMap<>() {{
             put(VariationType.NAIVE, getMinMaxTimestamp());
             put(VariationType.AVERAGE, getAllTimestamps());
-            put(VariationType.ADAPTIVE, getAllTimestamps());
+            put(VariationType.ADAPTIVE, getMinMaxTimestamp());
         }};
         this.setAttributeValueSetQueries(
                 new HashMap<>() {{
@@ -63,6 +63,6 @@ public class TimestampQuery extends CommonQuery {
     }
 
     private String getAllTimestamps() {
-        return String.format("select %s as element as duration from %s as t", TimestampQuery.conditionAttribute, this.getSelectFrom());
+        return String.format("select %s as element from %s as t", TimestampQuery.conditionAttribute, this.getSelectFrom());
     }
 }

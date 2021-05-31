@@ -1,7 +1,7 @@
 package analysis.metric;
 
+import query.analysis.AnalysisQuery;
 import query.analysis.CaseInfoQuery;
-import query.common.CommonQuery;
 import query.model.CaseInfo;
 
 import java.sql.ResultSet;
@@ -11,39 +11,33 @@ public class CaseVarianceMetric extends Metric{
 
     private double[] coefficients;
 
-    public CaseVarianceMetric(CommonQuery commonQuery) {
-        super("Calculate the variance (difference) per case metric");
-        this.setCommonQuery(commonQuery);
-    }
-
     public CaseVarianceMetric() {
         super("Calculate the variance (difference) per case metric");
+        this.analysisQuery = new CaseInfoQuery();
     }
 
     @Override
     public Object analyze() {
-        if(this.getCommonQuery() != null) {
-            CaseInfoQuery caseInfoQuery = new CaseInfoQuery(this.getCommonQuery());
-            if(this.getDatabaseConnection() != null) {
-                String query = caseInfoQuery.getQuery();
-                try {
-                    ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
-                    HashMap<Integer, double[]> cases = new HashMap<>();
-                    while (resultSet.next()) {
-                        CaseInfo caseInfo = CaseInfo.parseFrom(resultSet);
-                        double[] info = new double[]{
-                                caseInfo.getNumberOfActivities(),
-                                caseInfo.getNumberOfResources(),
-                                caseInfo.getAverage_transition_time(),
-                                caseInfo.getDuration()
-                        };
-                        cases.put(caseInfo.getCaseId(), info);
-                    }
-
-                    return cases;
-                } catch (Exception e) {
-                    System.out.println(e);
+        if(this.analysisQuery != null && this.analysisQuery.getCommonQuery() != null && this.getDatabaseConnection() != null) {
+            String query = this.analysisQuery.getQuery();
+            System.out.println(query);
+            try {
+                ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
+                HashMap<Integer, double[]> cases = new HashMap<>();
+                while (resultSet.next()) {
+                    CaseInfo caseInfo = CaseInfo.parseFrom(resultSet);
+                    double[] info = new double[]{
+                            caseInfo.getNumberOfActivities(),
+                            caseInfo.getNumberOfResources(),
+                            caseInfo.getAverage_transition_time(),
+                            caseInfo.getDuration()
+                    };
+                    cases.put(caseInfo.getCaseId(), info);
                 }
+
+                return cases;
+            } catch (Exception e) {
+                System.out.println(e);
             }
         }
         return null;
@@ -83,7 +77,7 @@ public class CaseVarianceMetric extends Metric{
 
         for(int caseId : o2.keySet()) {
             if(!o1.containsKey(caseId)) {
-                double[] v2 = o1.get(caseId);
+                double[] v2 = o2.get(caseId);
                 for(int i=0; i<this.coefficients.length; i++) {
                     diff += v2[i] != 0 ? this.coefficients[i] : 0;
                 }

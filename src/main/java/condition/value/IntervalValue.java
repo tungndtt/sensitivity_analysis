@@ -7,19 +7,19 @@ public class IntervalValue extends Value{
 	}
 
 	@Override
-	public Object increase(Object... objects) {
+	public Value increase(Object... objects) {
 		Number left = (Number) objects[0];
 		Number right = (Number) objects[1];
 		Value[] interval = (Value[]) this.getValue();
-		return new Object[]{interval[0].decrease(left), interval[1].increase(right)};
+		return new IntervalValue(new Value[]{interval[0].decrease(left), interval[1].increase(right)});
 	}
 
 	@Override
-	public Object decrease(Object... objects) {
+	public Value decrease(Object... objects) {
 		Number left = (Number) objects[0];
 		Number right = (Number) objects[1];
 		Value[] interval = (Value[]) this.getValue();
-		return new Object[]{interval[0].increase(left), interval[1].decrease(right)};
+		return new IntervalValue(new Value[]{interval[0].increase(left), interval[1].decrease(right)});
 	}
 
 	@Override

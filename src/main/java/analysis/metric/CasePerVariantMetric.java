@@ -1,5 +1,6 @@
 package analysis.metric;
 
+import query.analysis.AnalysisQuery;
 import query.analysis.CasesPerVariantQuery;
 import query.common.CommonQuery;
 import query.model.CasePerVariant;
@@ -9,20 +10,15 @@ import java.util.HashMap;
 public class CasePerVariantMetric extends Metric{
     public CasePerVariantMetric() {
         super("Calculate difference based on distribution of case activities variants");
-    }
-
-    public CasePerVariantMetric(CommonQuery commonQuery) {
-        super("Calculate difference based on distribution of case activities variants");
-        this.setCommonQuery(commonQuery);
+        this.analysisQuery = new CasesPerVariantQuery();
     }
 
 
     @Override
     public Object analyze() {
-        CasesPerVariantQuery casesPerVariantQuery = new CasesPerVariantQuery(this.getCommonQuery());
-
-        if(this.getDatabaseConnection() != null) {
-            String query = casesPerVariantQuery.getQuery();
+        if(this.analysisQuery != null && this.analysisQuery.getCommonQuery() != null && this.getDatabaseConnection() != null) {
+            String query = this.analysisQuery.getQuery();
+            System.out.println(query);
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
                 HashMap<String, Integer> variantDistribution = new HashMap<>();

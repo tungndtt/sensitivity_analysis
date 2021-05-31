@@ -24,7 +24,7 @@ public class AverageVariation extends Variation{
 
     private LinkedList<Comparable> getAllElements(String attribute) {
         String query = this.getCommonQuery().getQueryForVariation(attribute, this.getType());
-
+        System.out.println(query);
         if(query == null) {
             return null;
         }
@@ -92,6 +92,7 @@ public class AverageVariation extends Variation{
 
         NaiveVariation naiveVariation = new NaiveVariation();
         naiveVariation.setCommonQuery(this.getCommonQuery());
+        naiveVariation.setMetric(this.getMetric());
         naiveVariation.setUnitAndNumberOfIterations(unit, this.numberOfIterations);
 
         return naiveVariation.vary(attribute);
