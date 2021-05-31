@@ -51,6 +51,8 @@ __CS Bachelor Thesis__ <br />
 > /xlog
 >> Read and import the event log
 
+## Project class hierarchy
+![hierarchy](https://github.com/tungndtt/sensitivity_analysis/blob/master/project_hierarchy.PNG)
 
 ## Support formats
 
