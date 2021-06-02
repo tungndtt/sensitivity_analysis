@@ -113,7 +113,7 @@ public class AdaptiveVariation extends Variation {
                     iterations = 0;
                     prefix = "Plus in iteration ";
                     previousDiff = 0;
-                    while (((Comparable)variedValue).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
+                    while (((Comparable) variedValue.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
                         condition.setValue(variedValue);
                         Object variedBase = this.getMetric().analyze();
 

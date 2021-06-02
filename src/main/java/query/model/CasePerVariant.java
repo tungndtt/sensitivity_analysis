@@ -30,7 +30,7 @@ public class CasePerVariant {
         this.numberOfCases = numberOfCases;
     }
 
-    public static CasePerVariant CasePerVariant(ResultSet resultSet) {
+    public static CasePerVariant parseFrom(ResultSet resultSet) {
         try {
             String variant = resultSet.getString("variant");
             int numberOfCases = resultSet.getInt("number_of_variant");

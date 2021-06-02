@@ -23,7 +23,7 @@ public class CasePerVariantMetric extends Metric{
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
                 HashMap<String, Integer> variantDistribution = new HashMap<>();
                 while (resultSet.next()) {
-                    CasePerVariant casePerVariant = CasePerVariant.CasePerVariant(resultSet);
+                    CasePerVariant casePerVariant = CasePerVariant.parseFrom(resultSet);
                     variantDistribution.put(casePerVariant.getVariant(), casePerVariant.getNumberOfCases());
                 }
                 return variantDistribution;
