@@ -143,9 +143,9 @@ public class XLogUtil {
 
                 String logName = XLogUtil.getFileName(filePath);
 
-                dbConnection.createStatement().executeUpdate("drop table if exists " + logName);
+                dbConnection.prepareStatement("drop table if exists " + logName).executeUpdate();
 
-                String createQuery = "create table " + logName + "( caseId int, activity varchar(100), time_stamp date, resource varchar(100), group_name varchar(100)";
+                String createQuery = "create table " + logName + "( caseId int, activity varchar(100), time_stamp timestamp, resource varchar(100), group_name varchar(100)";
 
                 for(String column : columns.keySet()) {
                     createQuery += ", col_" + columnIndices.get(column) + " " + columns.get(column);
@@ -171,7 +171,7 @@ public class XLogUtil {
                         java.sql.Timestamp time_stamp = null;
                         if(event.getAttributes().containsKey(XTimeExtension.KEY_TIMESTAMP)) {
                             XAttributeTimestamp xAttributeTimestamp = (XAttributeTimestamp)(event.getAttributes().get(XTimeExtension.KEY_TIMESTAMP));
-                            time_stamp = new java.sql.Timestamp(xAttributeTimestamp.getValue().getTime());
+                            time_stamp = new java.sql.Timestamp(xAttributeTimestamp.getValueMillis());
                         }
                         insertStatement.setObject(3,  time_stamp);
                         insertStatement.setObject(4, event.getAttributes().containsKey(XOrganizationalExtension.KEY_RESOURCE) ? event.getAttributes().get(XOrganizationalExtension.KEY_RESOURCE).toString() : null);

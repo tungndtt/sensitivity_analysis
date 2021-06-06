@@ -13,6 +13,8 @@ public class AverageVariation extends Variation{
 
     private int numberOfIterations;
 
+    private Number differenceBound;
+
     public AverageVariation() {
         super(VariationType.AVERAGE);
     }
@@ -50,6 +52,10 @@ public class AverageVariation extends Variation{
         this.numberOfIterations = numberOfIterations;
     }
 
+    public void setDifferenceBound(Number differenceBound) {
+        this.differenceBound = differenceBound;
+    }
+
     @Override
     public LinkedList<Pair> vary(String attribute) {
         LinkedList<Comparable> elements = this.getAllElements(attribute);
@@ -59,35 +65,57 @@ public class AverageVariation extends Variation{
         Collections.sort(elements);
         Iterator<Comparable> iterator = elements.iterator();
         Comparable current = iterator.next();
-        Number sum = 0;
 
+        Number n = this.differenceBound;
+        if(current instanceof Integer) {
+            n = n.intValue();
+        }
+        else if(current instanceof Double) {
+            n = n.doubleValue();
+        }
+        else if(current instanceof Long || current instanceof Date) {
+            n = n.longValue();
+        }
+        else {
+            System.out.println("Unsupported type for average variation!");
+            return null;
+        }
+
+        Number sum = 0;
+        int number = 0;
         while(iterator.hasNext()) {
             Comparable next = iterator.next();
             Number distance = this.distance(current, next);
+
             if(distance == null) {
                 return null;
             }
-            else if(distance instanceof Integer) {
-                sum = distance.intValue() + sum.intValue();
+            if(((Comparable)distance).compareTo(n) <= 0) {
+                if(distance instanceof Integer) {
+                    sum = distance.intValue() + sum.intValue();
+                }
+                else if(distance instanceof Double) {
+                    sum = distance.doubleValue() + sum.doubleValue();
+                }
+                else if(distance instanceof Long) {
+                    sum = distance.longValue() + sum.longValue();
+                }
+                ++number;
             }
-            else if(distance instanceof Double) {
-                sum = distance.doubleValue() + sum.doubleValue();
-            }
-            else if(distance instanceof Long) {
-                sum = distance.longValue() + sum.longValue();
-            }
+
+            current = next;
         }
 
         Number unit = null;
 
         if(sum instanceof Integer) {
-            unit = sum.intValue()*this.gamma / elements.size();
+            unit = sum.intValue()*this.gamma / number;
         }
         else if(sum instanceof Double) {
-            unit = sum.doubleValue()*this.gamma / elements.size();
+            unit = sum.doubleValue()*this.gamma / number;
         }
         else if(sum instanceof Long) {
-            unit = sum.longValue()*this.gamma / elements.size();
+            unit = sum.longValue()*this.gamma / number;
         }
 
         NaiveVariation naiveVariation = new NaiveVariation();

@@ -34,13 +34,15 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
 
     @Override
     public Object analyze() {
-        if(this.getDatabaseConnection() != null && this.getAnalysisQuery().getCommonQuery() != null) {
+        if(this.getDatabaseConnection() != null && this.getAnalysisQuery().getCommonQuery() != null && this.startActivity != null && this.endActivity != null) {
+            ((SpecificActivityTransitionQuery)this.getAnalysisQuery()).setActivities(this.startActivity, this.endActivity);
             String query = this.getAnalysisQuery().getQuery();
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
 
                 HashMap<Integer, Double> separate_result = new HashMap<>();
                 double aggregate_result = 0.0;
+                int numberOfRows = 0;
 
                 while (resultSet.next()) {
                     SpecificActivityTransition specificActivityTransition = SpecificActivityTransition.parseFrom(resultSet);
@@ -52,10 +54,11 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
                         else {
                             aggregate_result += specificActivityTransition.getAverage_transition_time();
                         }
+                        ++numberOfRows;
                     }
                 }
 
-                return this.mode == Mode.SEPARATE ? separate_result : aggregate_result / resultSet.getFetchSize();
+                return this.mode == Mode.SEPARATE ? separate_result : numberOfRows != 0 ? aggregate_result / numberOfRows : 0.0;
             } catch (SQLException e) {
                 System.out.println(e);
                 return null;
@@ -71,7 +74,7 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
         if(this.mode == Mode.AGGREGATE) {
             double o1 = (Double) obj1;
             double o2 = (Double) obj2;
-            return Math.abs(o1 - o2);
+            return o1 != 0 && o2 != 0 ? Math.abs(o1 - o2)*2 / (o1 + o2) : o1 != o2 ? 1.0 : 0.0;
         }
         else {
             HashMap<Integer, Double> o1 = (HashMap<Integer, Double>) obj1;
@@ -83,7 +86,7 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
             for(int k1 : o1.keySet()) {
                 if(o2.containsKey(k1)) {
                     double v1 = o1.get(k1), v2 = o2.get(k1);
-                    result += Math.abs(v1 - v2)*2 / (v1 + v2);
+                    result += v1 != 0 && v2 != 0 ? Math.abs(v1 - v2)*2 / (v1 + v2) : v1 != v2 ? 1.0 : 0.0;
                 }
                 else {
                     result += 1;
@@ -97,6 +100,7 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
                     ++numberOfCases;
                 }
             }
+
             return result / numberOfCases;
         }
     }

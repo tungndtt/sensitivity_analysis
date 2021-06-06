@@ -21,7 +21,8 @@ public class Application {
     private static Connection dbConnection;
 
     public static void main(String[] args) {
-        Application.testPlotting();
+        //Application.testPlotting();
+        Application.testInsertingEventLog();
     }
 
     private static boolean establishConnection() {
