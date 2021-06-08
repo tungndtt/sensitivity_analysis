@@ -4,6 +4,9 @@ import analysis.variation.VariationType;
 import condition.*;
 import condition.value.DateValue;
 import condition.value.IntervalValue;
+import query.common.abstract_custom.CompareQuery;
+import query.common.abstract_custom.CustomQuery;
+import query.common.abstract_custom.IntervalQuery;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -12,37 +15,29 @@ public class TimestampQuery extends CommonQuery {
 
     private static String conditionAttribute = "t.time_stamp";
 
+    private CustomQuery customQuery;
+
     public TimestampQuery(String selectFrom, Date[] interval, boolean inside) {
         super("Time stamp in/out-side interval filter query", selectFrom);
         this.setAttributeValueSetQueriesHashMap();
 
-        DateValue startDate = new DateValue(interval[0]);
-        DateValue endDate = new DateValue(interval[1]);
-        IntervalValue value = new IntervalValue(new DateValue[]{startDate, endDate});
-        Condition condition = null;
-        if(inside) {
-            condition = new InIntervalCondition(TimestampQuery.conditionAttribute, value);
-        }
-        else {
-            condition = new NotCondition(null, new InIntervalCondition(TimestampQuery.conditionAttribute, value));
-        }
+        this.customQuery = new IntervalQuery("Time stamp in/out-side interval filter query", TimestampQuery.conditionAttribute, selectFrom, interval, inside);
 
-        this.setCondition(condition);
+        this.setCondition(this.customQuery.getCondition());
     }
 
     public TimestampQuery(String selectFrom, Date date, ComparisionType comparisionType) {
         super("Time stamp comparision filter query", selectFrom);
         this.setAttributeValueSetQueriesHashMap();
 
-        DateValue value = new DateValue(date);
-        CompareCondition compareCondition = new CompareCondition(TimestampQuery.conditionAttribute, value, comparisionType);
+        this.customQuery = new CompareQuery("Time stamp comparision filter query", TimestampQuery.conditionAttribute, selectFrom, date, comparisionType);
 
-        this.setCondition(compareCondition);
+        this.setCondition(this.customQuery.getCondition());
     }
 
     @Override
     public String getQuery() {
-        return String.format("select * from %s as t where %s", this.getSelectFrom(), this.getCondition().getCondition());
+        return this.customQuery.getQuery();
     }
 
     private void setAttributeValueSetQueriesHashMap() {

@@ -4,7 +4,9 @@ import analysis.variation.VariationType;
 import condition.*;
 import condition.value.IntervalValue;
 import condition.value.NumericalValue;
+import condition.value.Value;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class DurationPerCaseQuery extends CommonQuery {
@@ -16,7 +18,10 @@ public class DurationPerCaseQuery extends CommonQuery {
         this.setAttributeValueSetQueriesHashMap();
 
         Condition condition = null;
-        IntervalValue value = new IntervalValue(interval);
+        Value[] _interval = new Value[]{
+                new NumericalValue(interval[0]), new NumericalValue(interval[1])
+        };
+        IntervalValue value = new IntervalValue(_interval);
 
         if(inside) {
             condition = new InIntervalCondition(DurationPerCaseQuery.conditionAttribute, value);

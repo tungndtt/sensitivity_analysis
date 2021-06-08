@@ -13,7 +13,7 @@ public class NotCondition extends Condition {
 	@Override
 	public String getCondition() {
 		Condition cond = ((LinkedList<Condition>) this.getSubConditions()).getFirst();
-		return String.format("not( %s )", cond.toString());
+		return String.format("not( %s )", cond.getCondition());
 	}
 
 }

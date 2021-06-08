@@ -2,6 +2,9 @@ package query.analysis;
 
 import query.common.CommonQuery;
 
+/**
+ *
+ */
 public class CaseInfoQuery extends AnalysisQuery {
     public CaseInfoQuery(CommonQuery commonQuery) {
         super("Case overview information query", commonQuery);

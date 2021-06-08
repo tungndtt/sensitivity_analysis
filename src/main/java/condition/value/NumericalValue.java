@@ -11,10 +11,10 @@ public class NumericalValue extends Value {
 			return new NumericalValue((Integer)this.getValue() + ((Number)objects[0]).intValue());
 		}
 		else if(this.getValue() instanceof Long) {
-			return new NumericalValue((Long)this.getValue() + ((Long)objects[0]).longValue());
+			return new NumericalValue((Long)this.getValue() + ((Number)objects[0]).longValue());
 		}
 		else if(this.getValue() instanceof Double) {
-			return new NumericalValue((Double)this.getValue() + ((Double)objects[0]).doubleValue());
+			return new NumericalValue((Double)this.getValue() + ((Number)objects[0]).doubleValue());
 		}
 		else return null;
 	}
@@ -22,13 +22,13 @@ public class NumericalValue extends Value {
 	@Override
 	public Value decrease(Object... objects) {
 		if(this.getValue() instanceof Integer) {
-			return new NumericalValue((Integer)this.getValue() - ((Integer)objects[0]).intValue());
+			return new NumericalValue((Integer)this.getValue() - ((Number)objects[0]).intValue());
 		}
 		else if(this.getValue() instanceof Long) {
-			return new NumericalValue((Long)this.getValue() - ((Long)objects[0]).longValue());
+			return new NumericalValue((Long)this.getValue() - ((Number)objects[0]).longValue());
 		}
 		else if(this.getValue() instanceof Double) {
-			return new NumericalValue((Double)this.getValue() - ((Double)objects[0]).doubleValue());
+			return new NumericalValue((Double)this.getValue() - ((Number)objects[0]).doubleValue());
 		}
 		else return null;
 	}

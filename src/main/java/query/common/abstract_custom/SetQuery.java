@@ -7,19 +7,30 @@ import condition.value.SetElementType;
 import condition.value.SetValue;
 import java.util.List;
 
+/**
+ *
+ */
 public class SetQuery extends CustomQuery {
 
     public SetQuery(String queryName, String attribute, String selectFrom, List<Object> elements, boolean inside) {
         super(queryName, attribute, selectFrom);
 
         SetElementType elementType = null;
-        if(elements != null && elements.size() > 0) {
-            Object obj = elements.get(0);
-            if(obj instanceof Number) {
-                elementType = SetElementType.NUMBER;
-            }
-            else if(obj instanceof String) {
+        if(elements != null) {
+            if(elements.size() == 0) {
                 elementType = SetElementType.VARCHAR;
+            }
+            else {
+                Object obj = elements.get(0);
+                if(obj instanceof Number) {
+                    elementType = SetElementType.NUMBER;
+                }
+                else if(obj instanceof String) {
+                    elementType = SetElementType.VARCHAR;
+                }
+                else {
+                    System.out.println("Unsupported element type!");
+                }
             }
             if(elementType != null) {
                 SetValue value = new SetValue(elements, elementType);

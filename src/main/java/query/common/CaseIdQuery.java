@@ -2,59 +2,54 @@ package query.common;
 
 import analysis.variation.VariationType;
 import condition.*;
-import condition.value.*;
-
+import query.common.abstract_custom.CompareQuery;
+import query.common.abstract_custom.CustomQuery;
+import query.common.abstract_custom.IntervalQuery;
+import query.common.abstract_custom.SetQuery;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ *
+ */
 public class CaseIdQuery extends CommonQuery {
 
     private static String conditionAttribute = "t.caseid";
+
+    private CustomQuery customQuery;
 
     public CaseIdQuery(String selectFrom, List<Object> list, boolean inside) {
         super("Case id in/out-side list filter query", selectFrom);
         this.setAttributeValueSetQueriesHashMap();
 
-        SetValue value = new SetValue(list, SetElementType.NUMBER);
-        Condition condition = null;
-        if(inside) {
-            condition = new InSetCondition(CaseIdQuery.conditionAttribute, value);
-        }
-        else {
-            condition = new NotCondition(null, new InSetCondition(CaseIdQuery.conditionAttribute, value));
-        }
+        this.customQuery = new SetQuery("Case id in/out-side list filter query", CaseIdQuery.conditionAttribute, selectFrom, list, inside);
 
-        this.setCondition(condition);
+        this.setCondition(this.customQuery.getCondition());
     }
 
     public CaseIdQuery(String selectFrom, int[] interval, boolean inside) {
         super("Case id in/out-side interval filter query", selectFrom);
         this.setAttributeValueSetQueriesHashMap();
 
-        IntervalValue value = new IntervalValue(interval);
-        Condition condition = null;
-        if(inside) {
-            condition = new InIntervalCondition(CaseIdQuery.conditionAttribute, value);
-        }
-        else {
-            condition = new NotCondition(null, new InIntervalCondition(CaseIdQuery.conditionAttribute, value));
-        }
+        Integer[] _interval = Arrays.stream(interval).boxed().toArray(Integer[]::new);
+        this.customQuery = new IntervalQuery("Case id in/out-side interval filter query", CaseIdQuery.conditionAttribute, selectFrom, _interval, inside);
 
-        this.setCondition(condition);
+        this.setCondition(this.customQuery.getCondition());
     }
 
     public CaseIdQuery(String selectFrom, int number, ComparisionType comparisionType) {
         super("Case id comparision filter query", selectFrom);
+        this.setAttributeValueSetQueriesHashMap();
 
-        NumericalValue value = new NumericalValue(number);
-        CompareCondition compareCondition = new CompareCondition(CaseIdQuery.conditionAttribute, value, comparisionType);
+        this.customQuery = new CompareQuery("Case id comparision filter query", CaseIdQuery.conditionAttribute, selectFrom, number, comparisionType);
 
-        this.setCondition(compareCondition);
+        this.setCondition(this.customQuery.getCondition());
     }
 
     @Override
     public String getQuery() {
-        return String.format("select * from %s as t where %s", this.getSelectFrom(), this.getCondition().getCondition());
+        return this.customQuery.getQuery();
     }
 
     private void setAttributeValueSetQueriesHashMap() {

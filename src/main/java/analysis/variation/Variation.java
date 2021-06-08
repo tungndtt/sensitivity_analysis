@@ -75,5 +75,5 @@ public abstract class Variation {
         return Application.getConnection();
     }
 
-    public abstract LinkedList<Pair> vary(String condition);
+    public abstract LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> vary(String condition);
 }

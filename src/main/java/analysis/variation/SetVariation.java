@@ -82,27 +82,32 @@ public class SetVariation extends Variation {
 
                 int iterations = 1;
                 String prefix = "Add to set by ";
-                while(elements.size() > 0 && this.numberOfIterations >= iterations++) {
-                    Value variedValue = setValue.increase(this.unit, elements, existed);
+                while(elements.size() > 0 && this.numberOfIterations >= iterations) {
+                    setValue.increase(this.unit, elements, existed);
                     Object variedBase = this.getMetric().analyze();
 
                     double diffValue = this.getMetric().calculateDiff(base, variedBase);
                     changingRates.put(prefix + iterations*unit, diffValue);
+                    ++iterations;
                 }
 
                 copied.clear();
                 copied.addAll(originalElements);
+                Collections.shuffle(copied);
                 setValue.setValue(copied);
 
                 iterations = 1;
                 prefix = "Remove from set by ";
-                while (copied.size() > 0 && iterations++ <= this.numberOfIterations) {
-                    Value variedValue = setValue.decrease(this.unit);
+                while (copied.size() > 0 && iterations <= this.numberOfIterations && copied.size() > this.unit) {
+                    setValue.decrease(this.unit);
                     Object variedBase = this.getMetric().analyze();
 
                     double diffValue = this.getMetric().calculateDiff(base, variedBase);
                     changingRates.put(prefix + iterations*unit, diffValue);
+                    ++iterations;
                 }
+
+                setValue.setValue(originalElements);
 
                 pair.setChangingRate(changingRates);
                 result.add(pair);

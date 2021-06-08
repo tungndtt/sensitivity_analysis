@@ -70,7 +70,9 @@ public class CasePerVariantMetric extends Metric{
             --n;
         }
 
-        return CasePerVariantMetric.jensenShannonDivergence(p1, p2);
+        double diff = CasePerVariantMetric.jensenShannonDivergence(p1, p2);
+
+        return diff > 1 ? 1.0 : diff;
     }
 
     /**

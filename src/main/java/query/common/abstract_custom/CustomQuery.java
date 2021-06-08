@@ -2,6 +2,9 @@ package query.common.abstract_custom;
 
 import query.common.CommonQuery;
 
+/**
+ *
+ */
 public class CustomQuery extends CommonQuery {
 
     private String attribute;

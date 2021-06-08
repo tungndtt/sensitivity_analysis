@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+/**
+ *
+ */
 public class AverageVariation extends Variation{
 
     private double gamma;

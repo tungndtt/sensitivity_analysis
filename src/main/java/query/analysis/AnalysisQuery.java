@@ -2,6 +2,9 @@ package query.analysis;
 
 import query.common.CommonQuery;
 
+/**
+ *
+ */
 public abstract class AnalysisQuery {
 
     private String queryName;

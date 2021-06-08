@@ -63,8 +63,7 @@ public class CaseVarianceMetric extends Metric{
             if(o2.containsKey(caseId)) {
                 double[] v2 = o2.get(caseId);
                 for(int i=0; i<this.coefficients.length; i++) {
-                    double avg = (v1[i] + v2[i])/2;
-                    diff += avg != 0 ? this.coefficients[i]*Math.abs(v1[i] - v2[i])/avg : 0;
+                    diff += v1[i] != 0 && v2[i] != 0 ? this.coefficients[i]*Math.abs(v1[i] - v2[i])*2/(v1[i] + v2[i]) : v1[i] != v2[i] ? this.coefficients[i] : 0;
                 }
             }
             else {

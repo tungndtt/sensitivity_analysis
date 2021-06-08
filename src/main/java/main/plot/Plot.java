@@ -1,4 +1,4 @@
-package main;
+package main.plot;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -11,7 +11,9 @@ import org.jfree.ui.RefineryUtilities;
 
 import java.util.List;
 
-
+/**
+ *
+ */
 public class Plot extends ApplicationFrame {
 
     /**

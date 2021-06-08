@@ -44,13 +44,12 @@ public class SetValue extends Value {
 		int unit = (Integer) objects[0];
 		List<Object> listElements = (List<Object>) this.getValue();
 
-		while(unit-- > 0) {
+		while(unit-- > 0 && listElements.size() > 0) {
 			listElements.remove(0);
 		}
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public String toString() {
 		List<String> values = (List<String>)this.getValue();

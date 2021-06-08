@@ -5,10 +5,13 @@ import condition.InIntervalCondition;
 import condition.NotCondition;
 import condition.value.DateValue;
 import condition.value.IntervalValue;
+import condition.value.NumericalValue;
 import condition.value.Value;
-
 import java.util.Date;
 
+/**
+ *
+ */
 public class IntervalQuery extends CustomQuery {
 
     public IntervalQuery(String queryName, String attribute, String selectFrom, Object[] interval, boolean inside) {
@@ -22,7 +25,13 @@ public class IntervalQuery extends CustomQuery {
                 value = new IntervalValue(new DateValue[]{startDate, endDate});
             }
             else if(interval[0] instanceof Number){
-                value = new IntervalValue(interval);
+                Value[] _interval = new Value[] {
+                        new NumericalValue(interval[0]), new NumericalValue(interval[1])
+                };
+                value = new IntervalValue(_interval);
+            }
+            else {
+                System.out.println("Unsupported interval objects type!");
             }
             Condition condition = null;
             if(inside) {

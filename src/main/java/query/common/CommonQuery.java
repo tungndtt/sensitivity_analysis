@@ -2,9 +2,11 @@ package query.common;
 
 import analysis.variation.VariationType;
 import condition.Condition;
-
 import java.util.HashMap;
 
+/**
+ *
+ */
 public abstract class CommonQuery {
 	
 	private String queryName;

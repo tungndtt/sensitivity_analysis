@@ -13,6 +13,7 @@ import query.common.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,24 +32,41 @@ public class Test {
         CommonQuery timestampQuery = new TimestampQuery(tableName, ft.parse("2018-5-16"), ComparisionType.GT);
 
         // common query - resource
-        // in list
+        // not in list
         List<Object> resources = new LinkedList<>();
-        CommonQuery resourceQuery = new ResourceQuery(tableName, resources, true);
+        resources.add("user_232");
+        resources.add("user_000");
+        resources.add("user_013");
+        CommonQuery resourceQuery = new ResourceQuery(tableName, resources, false);
+
+        // common query - activity
+        // in list
+        List<Object> activities = new LinkedList<>();
+        activities.add("SRM: Created");
+        activities.add("SRM: Complete");
+        activities.add("Record Service Entry Sheet");
+        activities.add("Vendor creates invoice");
+        activities.add("Vendor creates debit memo");
+        activities.add("Record Invoice Receipt");
+        CommonQuery activityQuery = new ActivityQuery(tableName, activities, true);
 
         // common query - duration
         // greater than a month
         CommonQuery durationQuery = new DurationPerCaseQuery(tableName, 60*24*30, ComparisionType.GT);
         // within 1-2 months
-        CommonQuery durationIntervalQuery = new DurationPerCaseQuery(tableName, new double[]{60*24*30, 60*24*30*2}, true);
+        CommonQuery durationIntervalQuery = new DurationPerCaseQuery(tableName, new double[]{60*24, 60*24*30*4}, true);
 
         // common query - caseid
         // in list
         List<Object> caseIds = new LinkedList<>();
-        CommonQuery caseidInListQuery = new CaseIdQuery(tableName, caseIds, true);
+        for(int id=0; id<224; id++) {
+            caseIds.add(id);
+        }
+        CommonQuery caseidInListQuery = new CaseIdQuery(tableName, caseIds, false);
         // greater than 500
         CommonQuery caseIdCompareQuery = new CaseIdQuery(tableName, 500, ComparisionType.GTE);
         // in interval
-        CommonQuery caseIdIntervalQuery = new CaseIdQuery(tableName, new int[]{244, 1998}, true);
+        CommonQuery caseIdIntervalQuery = new CaseIdQuery(tableName, new int[]{100, 19980}, true);
 
         // metrics
         // case per variant metric
@@ -65,7 +83,7 @@ public class Test {
 
 
         // Run test
-        Test.testAverageVariation(timestampQuery, specificActivityTransitionPerCaseMetric);
+        Test.testNaiveVariation(caseIdIntervalQuery, caseVarianceMetric);
     }
 
     // Test
@@ -73,7 +91,7 @@ public class Test {
         NaiveVariation naiveVariation = new NaiveVariation();
         naiveVariation.setCommonQuery(commonQuery);
         naiveVariation.setMetric(metric);
-        naiveVariation.setUnitAndNumberOfIterations(1440, 5);
+        naiveVariation.setUnitAndNumberOfIterations(1, 40);
 
         Test.testPrint(naiveVariation);
     }
@@ -83,7 +101,7 @@ public class Test {
         AverageVariation averageVariation = new AverageVariation();
         averageVariation.setCommonQuery(commonQuery);
         averageVariation.setMetric(metric);
-        averageVariation.setGammaAndIterations(100, 10);
+        averageVariation.setGammaAndIterations(1, 15);
         averageVariation.setDifferenceBound(60*24*30);
 
         Test.testPrint(averageVariation);
@@ -94,8 +112,8 @@ public class Test {
         AdaptiveVariation adaptiveVariation = new AdaptiveVariation();
         adaptiveVariation.setCommonQuery(commonQuery);
         adaptiveVariation.setMetric(metric);
-        adaptiveVariation.setNumberOfIterations(11);
-        adaptiveVariation.setInitialUnitAndAlpha(60, 1.5);
+        adaptiveVariation.setNumberOfIterations(15);
+        adaptiveVariation.setInitialUnitAndAlpha(1, 1.2);
 
         Test.testPrint(adaptiveVariation);
     }
@@ -105,7 +123,7 @@ public class Test {
         SetVariation setVariation = new SetVariation();
         setVariation.setCommonQuery(commonQuery);
         setVariation.setMetric(metric);
-        setVariation.setNumberOfIterationsAndUnit(8, 2);
+        setVariation.setNumberOfIterationsAndUnit(10, 1);
 
         Test.testPrint(setVariation);
     }
@@ -113,12 +131,39 @@ public class Test {
     private static void testPrint(Variation variation) {
         Condition condition = variation.getVaryingConditions().getFirst();
 
-        LinkedList<Pair> result = variation.vary(condition.getAttribute());
+        LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> result = variation.vary(condition.getAttribute());
+        if(result != null) {
+            for(Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> part : result) {
+                System.out.println(part.getValue1());
+                String str = part.getValue2() > 0 ? " increasing " : " decreasing ";
+                System.out.println(str + "....");
 
-        for(Pair pair : result) {
-            System.out.println(pair.getCondition());
-            for(String key : pair.getChangingRate().keySet()) {
-                System.out.println(key + " has changing rate " + pair.getChangingRate().get(key));
+                Number number = part.getValue3().getValue1();
+                Iterator<Number> numbers = part.getValue3().getValue2().iterator();
+                Iterator<Double> diff_values = part.getValue3().getValue3().iterator();
+
+                int count = 0;
+
+                while(numbers.hasNext()) {
+                    Number n = numbers.next();
+                    Double diff = diff_values.next();
+
+                    Number value = null;
+                    if(n instanceof Double || number instanceof Double) {
+                        value = n.doubleValue()*number.doubleValue();
+                    }
+                    else if(n instanceof Long || number instanceof Long){
+                        value = n.intValue()*number.intValue();
+                    }
+                    else if(n instanceof Integer && n instanceof Integer) {
+                        value = n.longValue()*number.longValue();
+                    }
+                    else {
+                        System.out.println("Unsupported number type!");
+                        return;
+                    }
+                    System.out.println("Iteration " + (++count) + str + " by " + value.toString() + " has changing rate = " + diff.toString());
+                }
             }
         }
     }

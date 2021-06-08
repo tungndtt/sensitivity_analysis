@@ -8,6 +8,9 @@ import condition.value.Value;
 
 import java.util.Date;
 
+/**
+ *
+ */
 public class CompareQuery extends CustomQuery {
 
     public CompareQuery(String queryName, String attribute, String selectFrom, Comparable value, ComparisionType comparisionType) {

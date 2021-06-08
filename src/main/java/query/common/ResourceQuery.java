@@ -1,9 +1,8 @@
 package query.common;
 
 import analysis.variation.VariationType;
-import condition.*;
-import condition.value.SetElementType;
-import condition.value.SetValue;
+import query.common.abstract_custom.CustomQuery;
+import query.common.abstract_custom.SetQuery;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,26 +11,20 @@ public class ResourceQuery extends CommonQuery {
 
     private static String conditionAttribute = "t.resource";
 
+    private CustomQuery customQuery;
+
     public ResourceQuery(String selectFrom, List<Object> list, boolean inside) {
         super("Resource in/out-side list filter query", selectFrom);
         this.setAttributeValueSetQueriesHashMap();
 
-        SetValue value = new SetValue(list, SetElementType.VARCHAR);
+        this.customQuery = new SetQuery("Resource in/out-side list filter query", ResourceQuery.conditionAttribute, selectFrom, list, inside);
 
-        Condition condition = null;
-        if(inside) {
-            condition = new InSetCondition(ResourceQuery.conditionAttribute, value);
-        }
-        else {
-            condition = new NotCondition(null, new InSetCondition(ResourceQuery.conditionAttribute, value));
-        }
-
-        this.setCondition(condition);
+        this.setCondition(this.customQuery.getCondition());
     }
 
     @Override
     public String getQuery() {
-        return String.format("select * from %s as t where %s", this.getSelectFrom(), this.getCondition().getCondition() );
+        return this.customQuery.getQuery();
     }
 
     private void setAttributeValueSetQueriesHashMap() {

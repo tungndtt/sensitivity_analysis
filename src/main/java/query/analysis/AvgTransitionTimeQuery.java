@@ -2,6 +2,9 @@ package query.analysis;
 
 import query.common.CommonQuery;
 
+/**
+ *
+ */
 public class AvgTransitionTimeQuery extends AnalysisQuery {
 
     public AvgTransitionTimeQuery(CommonQuery commonQuery) {

@@ -2,6 +2,9 @@ package query.analysis;
 
 import query.common.CommonQuery;
 
+/**
+ *
+ */
 public class CasesPerVariantQuery extends AnalysisQuery {
     public CasesPerVariantQuery(CommonQuery commonQuery) {
         super("Number of cases per variant of activities query", commonQuery);

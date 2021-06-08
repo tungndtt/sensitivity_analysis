@@ -2,6 +2,9 @@ package query.analysis;
 
 import query.common.CommonQuery;
 
+/**
+ *
+ */
 public class SpecificActivityTransitionQuery extends AnalysisQuery{
 
     private String startActivity, endActivity;

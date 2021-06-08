@@ -37,6 +37,7 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
         if(this.getDatabaseConnection() != null && this.getAnalysisQuery().getCommonQuery() != null && this.startActivity != null && this.endActivity != null) {
             ((SpecificActivityTransitionQuery)this.getAnalysisQuery()).setActivities(this.startActivity, this.endActivity);
             String query = this.getAnalysisQuery().getQuery();
+            System.out.println(query);
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
 
