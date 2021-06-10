@@ -1,22 +1,18 @@
 package main.benchmark;
 
 /**
+ * Simple implementation benchmark to count the runtime
  *
+ * @author Tung Doan
  */
 public abstract class BenchMark {
 
-    private Object[] args;
-
-    public BenchMark(Object[] args) {
-        this.args = args;
-    }
-
     /**
-     *
+     * run the "to-count" function iteratively and calculate the average runtime
      * @param numberOfIterations
-     * @return
+     * @return average runtime
      */
-    public long count(int numberOfIterations) {
+    public long runCounter(int numberOfIterations) {
 
         numberOfIterations = numberOfIterations < 1 ? 1 : numberOfIterations;
 
@@ -24,7 +20,7 @@ public abstract class BenchMark {
 
         for(int i=0; i<numberOfIterations; ++i) {
             long startTime = System.currentTimeMillis();
-            this.run(this.args);
+            this.run();
             long endTime = System.currentTimeMillis();
 
             avgTime += endTime - startTime;
@@ -34,8 +30,7 @@ public abstract class BenchMark {
     }
 
     /**
-     *
-     * @param args
+     * run the function to count the runtime
      */
-    public abstract void run(Object... args);
+    public abstract void run();
 }

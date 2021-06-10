@@ -1,14 +1,21 @@
 package analysis.metric;
 
-import query.analysis.AnalysisQuery;
 import query.analysis.CaseInfoQuery;
 import query.model.CaseInfo;
-
 import java.sql.ResultSet;
 import java.util.HashMap;
 
+/**
+ * Implement the metric to calculate the difference between 2 event logs based on the general information in cases
+ * (number of activities, number of resources, duration, average transition time between 2 activities)
+ *
+ * @author Tung Doan
+ */
 public class CaseVarianceMetric extends Metric{
 
+    /**
+     * coefficients = [alpha, beta, theta, gamma] with alpha + beta + theta + gamma = 1.0
+     */
     private double[] coefficients;
 
     public CaseVarianceMetric() {
@@ -20,7 +27,7 @@ public class CaseVarianceMetric extends Metric{
     public Object analyze() {
         if(this.analysisQuery != null && this.analysisQuery.getCommonQuery() != null && this.getDatabaseConnection() != null) {
             String query = this.analysisQuery.getQuery();
-            System.out.println(query);
+            //System.out.println(query);
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
                 HashMap<Integer, double[]> cases = new HashMap<>();
@@ -63,7 +70,7 @@ public class CaseVarianceMetric extends Metric{
             if(o2.containsKey(caseId)) {
                 double[] v2 = o2.get(caseId);
                 for(int i=0; i<this.coefficients.length; i++) {
-                    diff += v1[i] != 0 && v2[i] != 0 ? this.coefficients[i]*Math.abs(v1[i] - v2[i])*2/(v1[i] + v2[i]) : v1[i] != v2[i] ? this.coefficients[i] : 0;
+                    diff += v1[i] != 0 || v2[i] != 0 ? this.coefficients[i]*Math.abs(v1[i] - v2[i])/Math.max(v1[i], v2[i]) : 0;
                 }
             }
             else {

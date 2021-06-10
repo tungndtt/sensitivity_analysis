@@ -60,7 +60,7 @@ public class AverageVariation extends Variation{
     }
 
     @Override
-    public LinkedList<Pair> vary(String attribute) {
+    public LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> vary(String attribute) {
         LinkedList<Comparable> elements = this.getAllElements(attribute);
         if(elements.size() < 2) {
             return null;

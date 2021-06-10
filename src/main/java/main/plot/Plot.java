@@ -12,7 +12,9 @@ import org.jfree.ui.RefineryUtilities;
 import java.util.List;
 
 /**
+ * Implementation for simple coordinate system plotting
  *
+ * @author Tung Doan
  */
 public class Plot extends ApplicationFrame {
 
@@ -24,11 +26,11 @@ public class Plot extends ApplicationFrame {
      * @param legendY meaning of Y
      * @param points list of points to plot
      */
-    public Plot(String title, String meaning, String legendX, String legendY, List<double[]> points) {
+    public Plot(String title, String meaning, String legendX, String legendY, List<Number[]> points) {
 
         super(title);
         final XYSeries series = new XYSeries(meaning);
-        for(double[] point : points) {
+        for(Number[] point : points) {
             series.add(point[0], point[1]);
         }
         XYSeriesCollection data = new XYSeriesCollection(series);

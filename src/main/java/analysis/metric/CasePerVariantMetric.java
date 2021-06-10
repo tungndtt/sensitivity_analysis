@@ -1,12 +1,15 @@
 package analysis.metric;
 
-import query.analysis.AnalysisQuery;
 import query.analysis.CasesPerVariantQuery;
-import query.common.CommonQuery;
 import query.model.CasePerVariant;
 import java.sql.ResultSet;
 import java.util.HashMap;
 
+/**
+ * Implement metric to calculate the difference between 2 event logs based on their activity variants
+ *
+ * @author Tung Doan
+ */
 public class CasePerVariantMetric extends Metric{
     public CasePerVariantMetric() {
         super("Calculate difference based on distribution of case activities variants");
@@ -18,7 +21,7 @@ public class CasePerVariantMetric extends Metric{
     public Object analyze() {
         if(this.analysisQuery != null && this.analysisQuery.getCommonQuery() != null && this.getDatabaseConnection() != null) {
             String query = this.analysisQuery.getQuery();
-            System.out.println(query);
+            //System.out.println(query);
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
                 HashMap<String, Integer> variantDistribution = new HashMap<>();

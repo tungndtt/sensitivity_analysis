@@ -8,7 +8,6 @@ import condition.value.Value;
 import query.common.CommonQuery;
 import java.util.Date;
 import java.sql.ResultSet;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 /**
@@ -99,8 +98,9 @@ public class NaiveVariation extends Variation{
 
                 if(condition.getValue() instanceof DateValue || condition.getValue() instanceof NumericalValue) {
 
-                    Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
-                    positive.setValue1(String.format("condition %d : %s", condIdx++, condition.getCondition()));
+                    Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
+                    negative.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
+
                     Pair<Number, LinkedList<Number>, LinkedList<Double>> part = new Pair<>();
                     part.setValue1(this.unit);
                     LinkedList<Number> changingSizes = new LinkedList<>();
@@ -108,25 +108,28 @@ public class NaiveVariation extends Variation{
 
                     Value obj = condition.getValue().decrease(this.unit);
                     int iterations = 0;
-                    positive.setValue2(1);
+                    negative.setValue2(-1);
                     while(((Comparable) obj.getValue()).compareTo(minMaxRange[0]) >= 0 && ((Comparable) obj.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
-                        condition.setValue(obj);
                         Object variedBase = this.getMetric().analyze();
 
                         double diffValue = this.getMetric().calculateDiff(base, variedBase);
                         changingRates.add(diffValue);
 
                         changingSizes.add(++iterations);
+
+                        obj = condition.getValue().decrease(this.unit);
+                        condition.setValue(obj);
                     }
 
                     part.setValue2(changingSizes);
                     part.setValue3(changingRates);
-                    positive.setValue3(part);
+                    negative.setValue3(part);
 
                     condition.setValue(originValue);
 
-                    Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
-                    negative.setValue1(String.format("condition %d : %s", condIdx++, condition.getCondition()));
+                    Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
+                    positive.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
+
                     part = new Pair<>();
                     part.setValue1(this.unit);
                     changingSizes = new LinkedList<>();
@@ -134,9 +137,8 @@ public class NaiveVariation extends Variation{
 
                     obj = condition.getValue().increase(this.unit);
                     iterations = 0;
-                    negative.setValue2(-1);
+                    positive.setValue2(1);
                     while(((Comparable) obj.getValue()).compareTo(minMaxRange[0]) >= 0 && ((Comparable) obj.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
-                        condition.setValue(obj);
                         Object variedBase = this.getMetric().analyze();
 
                         double diffValue = this.getMetric().calculateDiff(base, variedBase);
@@ -145,21 +147,24 @@ public class NaiveVariation extends Variation{
                         changingSizes.add(++iterations);
 
                         obj = condition.getValue().increase(this.unit);
+                        condition.setValue(obj);
                     }
 
                     condition.setValue(originValue);
 
                     part.setValue2(changingSizes);
                     part.setValue3(changingRates);
-                    negative.setValue3(part);
+                    positive.setValue3(part);
 
                     result.add(positive);
                     result.add(negative);
+
+                    condIdx++;
                 }
                 else if(condition.getValue() instanceof IntervalValue) {
 
                     Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
-                    negative.setValue1(String.format("condition %d : %s", condIdx++, condition.getCondition()));
+                    negative.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
 
                     Pair<Number, LinkedList<Number>, LinkedList<Double>> part = new Pair<>();
                     part.setValue1(this.unit);
@@ -167,20 +172,21 @@ public class NaiveVariation extends Variation{
                     LinkedList<Number> changingSizes = new LinkedList<>();
 
                     Value new_value = condition.getValue().decrease(this.unit, this.unit);
-                    Value[] obj = (Value[]) new_value.getValue() ;
+                    Value[] obj = (Value[]) new_value.getValue();
                     int iterations = 0;
                     negative.setValue2(-1);
                     while(iterations < this.numberOfIterations && ((Comparable) obj[0].getValue()).compareTo(obj[1].getValue()) <= 0) {
-                        condition.setValue(new_value);
                         Object variedBase = this.getMetric().analyze();
 
                         double diffValue = this.getMetric().calculateDiff(base, variedBase);
+
                         changingRates.add(diffValue);
 
                         changingSizes.add(++iterations);
 
                         new_value = condition.getValue().decrease(this.unit, this.unit);
                         obj = (Value[]) new_value.getValue();
+                        condition.setValue(new_value);
                         iterations++;
                     }
 
@@ -191,6 +197,7 @@ public class NaiveVariation extends Variation{
                     condition.setValue(originValue);
 
                     Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
+                    positive.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
                     part = new Pair<>();
                     part.setValue1(this.unit);
                     changingRates = new LinkedList<>();
@@ -202,7 +209,6 @@ public class NaiveVariation extends Variation{
                     iterations = 0;
                     positive.setValue2(1);
                     while(iterations < this.numberOfIterations && (((Comparable) obj[0].getValue()).compareTo(minMaxRange[0]) >= 0 || ((Comparable) obj[1].getValue()).compareTo(minMaxRange[1]) <= 0)) {
-                        condition.setValue(new_value);
                         Object variedBase = this.getMetric().analyze();
 
                         double diffValue = this.getMetric().calculateDiff(base, variedBase);
@@ -222,7 +228,9 @@ public class NaiveVariation extends Variation{
                             break;
                         }
                         new_value = condition.getValue().increase(left == null ? 0 : left, right == null ? 0 : right);
+                        condition.setValue(new_value);
                         obj = (Value[]) new_value.getValue();
+                        ++iterations;
                     }
 
                     part.setValue2(changingSizes);
@@ -233,6 +241,8 @@ public class NaiveVariation extends Variation{
 
                     result.add(positive);
                     result.add(negative);
+
+                    condIdx++;
                 }
                 else {
                     System.out.println("Unsupported value type for naive variation!");

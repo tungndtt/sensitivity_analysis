@@ -1,7 +1,5 @@
 package analysis.variation;
 
-import java.util.HashMap;
-
 public class Pair<V1, V2, V3> {
     private V1 value1;
 

@@ -2,9 +2,7 @@ package analysis.variation;
 
 import condition.Condition;
 import condition.value.SetValue;
-import condition.value.Value;
 import query.common.CommonQuery;
-
 import java.sql.ResultSet;
 import java.util.*;
 
@@ -52,7 +50,7 @@ public class SetVariation extends Variation {
     }
 
     @Override
-    public LinkedList<Pair> vary(String attribute) {
+    public LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> vary(String attribute) {
 
         LinkedList<Condition> conditions = this.getVaryingConditions();
 
@@ -60,12 +58,17 @@ public class SetVariation extends Variation {
             return null;
         }
 
-        LinkedList<Pair> result = new LinkedList<>();
+        LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> result = new LinkedList<>();
         int condIdx = 1;
         for(Condition condition : conditions) {
             if(condition.getAttribute().equals(attribute)) {
-                Pair pair = new Pair(String.format("Condition %d: %s", condIdx++, condition.getCondition()));
-                HashMap<String, Double> changingRates = new HashMap<>();
+                Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
+                positive.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
+                Pair<Number, LinkedList<Number>, LinkedList<Double>> part = new Pair<>();
+                part.setValue1(this.unit);
+                LinkedList<Number> changingSizes = new LinkedList<>();
+                LinkedList<Double> changingRates = new LinkedList<>();
+
                 SetValue setValue = (SetValue) condition.getValue();
                 List<Object> originalElements = (List<Object>) setValue.getValue();
                 List<Object> copied = new LinkedList<>();
@@ -81,36 +84,54 @@ public class SetVariation extends Variation {
                 Object base = this.getMetric().analyze();
 
                 int iterations = 1;
-                String prefix = "Add to set by ";
+                positive.setValue2(1);
                 while(elements.size() > 0 && this.numberOfIterations >= iterations) {
                     setValue.increase(this.unit, elements, existed);
                     Object variedBase = this.getMetric().analyze();
 
                     double diffValue = this.getMetric().calculateDiff(base, variedBase);
-                    changingRates.put(prefix + iterations*unit, diffValue);
-                    ++iterations;
+                    changingRates.add(diffValue);
+
+                    changingSizes.add(++iterations);
                 }
+
+                part.setValue2(changingSizes);
+                part.setValue3(changingRates);
+                positive.setValue3(part);
 
                 copied.clear();
                 copied.addAll(originalElements);
                 Collections.shuffle(copied);
                 setValue.setValue(copied);
 
+                Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
+                negative.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
+                part = new Pair<>();
+                part.setValue1(this.unit);
+                changingSizes = new LinkedList<>();
+                changingRates = new LinkedList<>();
+
                 iterations = 1;
-                prefix = "Remove from set by ";
+                negative.setValue2(-1);
                 while (copied.size() > 0 && iterations <= this.numberOfIterations && copied.size() > this.unit) {
                     setValue.decrease(this.unit);
                     Object variedBase = this.getMetric().analyze();
 
                     double diffValue = this.getMetric().calculateDiff(base, variedBase);
-                    changingRates.put(prefix + iterations*unit, diffValue);
-                    ++iterations;
+                    changingRates.add(diffValue);
+
+                    changingSizes.add(++iterations);
                 }
+                part.setValue2(changingSizes);
+                part.setValue3(changingRates);
+                negative.setValue3(part);
 
                 setValue.setValue(originalElements);
 
-                pair.setChangingRate(changingRates);
-                result.add(pair);
+                result.add(positive);
+                result.add(negative);
+
+                condIdx++;
             }
         }
         return result;

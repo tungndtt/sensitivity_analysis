@@ -1,11 +1,15 @@
 package analysis.metric;
 
-import main.Application;
+import db_connection.DbConnection;
 import query.analysis.AnalysisQuery;
 import query.common.CommonQuery;
-
 import java.sql.Connection;
 
+/**
+ * Metric general form
+ *
+ * @author Tung Doan
+ */
 public abstract class Metric {
 
     protected AnalysisQuery analysisQuery;
@@ -31,7 +35,7 @@ public abstract class Metric {
     }
 
     protected Connection getDatabaseConnection() {
-        return Application.getConnection();
+        return DbConnection.getConnection();
     }
 
     public abstract Object analyze();

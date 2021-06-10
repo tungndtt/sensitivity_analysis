@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
-import main.Application;
+import db_connection.DbConnection;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
 import org.deckfour.xes.extension.std.XTimeExtension;
@@ -125,7 +125,7 @@ public class XLogUtil {
         }};
 
         if(xlog != null) {
-            Connection dbConnection = Application.getConnection();
+            Connection dbConnection = DbConnection.getConnection();
             try {
                 XLogInfo logInfo = XLogInfoFactory.createLogInfo(xlog);
 

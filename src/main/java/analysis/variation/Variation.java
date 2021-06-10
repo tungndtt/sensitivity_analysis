@@ -2,9 +2,8 @@ package analysis.variation;
 
 import analysis.metric.Metric;
 import condition.Condition;
-import main.Application;
+import db_connection.DbConnection;
 import query.common.CommonQuery;
-
 import java.sql.Connection;
 import java.util.LinkedList;
 
@@ -72,7 +71,7 @@ public abstract class Variation {
     }
 
     protected Connection getDatabaseConnection() {
-        return Application.getConnection();
+        return DbConnection.getConnection();
     }
 
     public abstract LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> vary(String condition);

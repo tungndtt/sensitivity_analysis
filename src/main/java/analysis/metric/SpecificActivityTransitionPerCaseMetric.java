@@ -2,16 +2,21 @@ package analysis.metric;
 
 import query.analysis.SpecificActivityTransitionQuery;
 import query.model.SpecificActivityTransition;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
+/**
+ * Implement metric to calculate the difference between 2 event logs based on the transition time between 2 specific activities
+ * This transition time between the 2 specific activities can be AGGREGATED or SEPARATED in analysis
+ *
+ * @author Tung Doan
+ */
 public class SpecificActivityTransitionPerCaseMetric extends Metric{
 
     private String startActivity, endActivity;
 
-    public static enum Mode {
+    public enum Mode {
         SEPARATE,
         AGGREGATE
     }
@@ -37,7 +42,7 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
         if(this.getDatabaseConnection() != null && this.getAnalysisQuery().getCommonQuery() != null && this.startActivity != null && this.endActivity != null) {
             ((SpecificActivityTransitionQuery)this.getAnalysisQuery()).setActivities(this.startActivity, this.endActivity);
             String query = this.getAnalysisQuery().getQuery();
-            System.out.println(query);
+            //System.out.println(query);
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
 
@@ -75,7 +80,8 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
         if(this.mode == Mode.AGGREGATE) {
             double o1 = (Double) obj1;
             double o2 = (Double) obj2;
-            return o1 != 0 && o2 != 0 ? Math.abs(o1 - o2)*2 / (o1 + o2) : o1 != o2 ? 1.0 : 0.0;
+
+            return o1 != 0 || o2 != 0 ? Math.abs(o1 - o2) / Math.max(o1, o2) : 0.0;
         }
         else {
             HashMap<Integer, Double> o1 = (HashMap<Integer, Double>) obj1;
