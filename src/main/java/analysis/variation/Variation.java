@@ -1,5 +1,6 @@
 package analysis.variation;
 
+import analysis.Pair;
 import analysis.metric.Metric;
 import condition.Condition;
 import db_connection.DbConnection;
@@ -7,6 +8,11 @@ import query.common.CommonQuery;
 import java.sql.Connection;
 import java.util.LinkedList;
 
+/**
+ * Variation general form
+ *
+ * @author Tung Doan
+ */
 public abstract class Variation {
 
     private VariationType type;
@@ -45,24 +51,7 @@ public abstract class Variation {
 
     private void retrieveAllVaryingConditions() {
         if(this.commonQuery != null) {
-            LinkedList<Condition> conditions = new LinkedList<>();
-
-            LinkedList<Condition> queue = new LinkedList<>();
-            queue.add(this.commonQuery.getCondition());
-
-            while (queue.size() > 0) {
-                Condition condition = queue.removeFirst();
-                if(condition.getAttribute() != null) {
-                    conditions.add(condition);
-                }
-                if(condition.getSubConditions() != null) {
-                    for(Condition subCondition : condition.getSubConditions()) {
-                        queue.add(subCondition);
-                    }
-                }
-            }
-
-            this.varyingConditions = conditions;
+            this.varyingConditions = this.commonQuery.retrieveAllConditionsWithValue();
         }
     }
 

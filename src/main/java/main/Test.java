@@ -1,5 +1,6 @@
 package main;
 
+import analysis.Pair;
 import analysis.metric.CasePerVariantMetric;
 import analysis.metric.CaseVarianceMetric;
 import analysis.metric.Metric;
@@ -10,6 +11,7 @@ import condition.Condition;
 import main.benchmark.BenchMark;
 import main.plot.Plot;
 import query.common.*;
+import query.common.custom.*;
 import xlog.XLogUtil;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,9 +21,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Test implemented variation algorithms and metrics
  *
+ * @author Tung Doan
  */
-public class Test extends BenchMark {
+public class Test {
 
     private static String tableName = "log_ieee";
 
@@ -35,25 +39,15 @@ public class Test extends BenchMark {
         Metric metric = Test.getMetric(metricType);
 
         // Run test
-        //Test.testPlotting(Test.testNaiveVariation(commonQuery, metric));
+        //Test.testPlotting(Test.testAverageVariation(commonQuery, metric));
 
         // Check runtime
-        long runtime = new Test().runCounter(1);
-        System.out.println(runtime);
-    }
-
-    @Override
-    public void run() {
-        CommonQuery commonQuery = null;
-        try {
-            CommonQueryType commonQueryType = CommonQueryType.TIMESTAMP_INTERVAL;
-            MetricType metricType = MetricType.CASE_VARIANT_METRIC;
-            commonQuery = Test.getCommonQuery(commonQueryType);
-            Metric metric = Test.getMetric(metricType);
+        BenchMark benchMark = new BenchMark();
+        benchMark.setFunction(() -> {
             Test.testNaiveVariation(commonQuery, metric);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+        });
+        long runtime = benchMark.runCounter(1);
+        System.out.println(runtime);
     }
 
     private enum CommonQueryType {
@@ -73,8 +67,8 @@ public class Test extends BenchMark {
         CommonQuery commonQuery = null;
         switch (type) {
 
+            // common query - timestamp
             case TIMESTAMP_INTERVAL:
-                // common query - timestamp
                 // in interval
                 SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
                 commonQuery = new TimestampQuery(tableName, new Date[] {ft.parse("2017-06-15"), ft.parse("2019-01-12")}, true);
@@ -95,8 +89,8 @@ public class Test extends BenchMark {
                 commonQuery = new ResourceQuery(tableName, resources, false);
                 break;
 
+            // common query - activity
             case ACTIVITY_IN_LIST:
-                // common query - activity
                 // in list
                 List<Object> activities = new LinkedList<>();
                 activities.add("SRM: Created");
@@ -105,17 +99,17 @@ public class Test extends BenchMark {
                 activities.add("Vendor creates invoice");
                 activities.add("Vendor creates debit memo");
                 activities.add("Record Invoice Receipt");
-                commonQuery = new ActivityQuery(tableName, activities, true);
+                commonQuery = new ActivityQuery(tableName, activities, false);
                 break;
 
             // common query - duration
             case DURATION_COMPARE:
                 // greater than a month
-                commonQuery = new DurationPerCaseQuery(tableName, 60*24*30, ComparisionType.GT);
+                commonQuery = new DurationPerCaseQuery(tableName, 60*24*45, ComparisionType.GT);
                 break;
             case DURATION_INTERVAL:
-                // within 1-2 months
-                commonQuery = new DurationPerCaseQuery(tableName, new double[]{60*24, 60*24*30*4}, true);
+                // within 0.5-4 months
+                commonQuery = new DurationPerCaseQuery(tableName, new double[]{60*24*15, 60*24*30*4}, true);
                 break;
 
             // common query - caseid
@@ -188,7 +182,7 @@ public class Test extends BenchMark {
         NaiveVariation naiveVariation = new NaiveVariation();
         naiveVariation.setCommonQuery(commonQuery);
         naiveVariation.setMetric(metric);
-        naiveVariation.setUnitAndNumberOfIterations(200, 150);
+        naiveVariation.setUnitAndNumberOfIterations(100, 150);
 
         Condition condition = naiveVariation.getVaryingConditions().getFirst();
         return naiveVariation.vary(condition.getAttribute());
@@ -199,7 +193,7 @@ public class Test extends BenchMark {
         AverageVariation averageVariation = new AverageVariation();
         averageVariation.setCommonQuery(commonQuery);
         averageVariation.setMetric(metric);
-        averageVariation.setGammaAndIterations(10, 150);
+        averageVariation.setGammaAndIterations(20, 150);
         averageVariation.setDifferenceBound(60*24*30);
 
         Condition condition = averageVariation.getVaryingConditions().getFirst();
@@ -223,7 +217,7 @@ public class Test extends BenchMark {
         SetVariation setVariation = new SetVariation();
         setVariation.setCommonQuery(commonQuery);
         setVariation.setMetric(metric);
-        setVariation.setNumberOfIterationsAndUnit(10, 1);
+        setVariation.setNumberOfIterationsAndUnit(50, 1);
 
         Condition condition = setVariation.getVaryingConditions().getFirst();
         return setVariation.vary(condition.getAttribute());
@@ -266,10 +260,10 @@ public class Test extends BenchMark {
                 points.add(new Number[]{value, diff});
             }
         }
-        new Plot(title, "", "changing unit", "changing rate", points).display();
+        new Plot(title, "changing rate", "variation size", "difference", points).display();
     }
 
-    private static void testPrint(LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> result) {
+    private static void testPrinting(LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> result) {
         if(result != null) {
             for(Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> part : result) {
                 System.out.println(part.getValue1());

@@ -1,4 +1,4 @@
-package analysis.variation;
+package analysis;
 
 public class Pair<V1, V2, V3> {
     private V1 value1;

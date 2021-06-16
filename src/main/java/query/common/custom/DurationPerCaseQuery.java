@@ -1,15 +1,15 @@
-package query.common;
+package query.common.custom;
 
 import analysis.variation.VariationType;
 import condition.*;
 import condition.value.IntervalValue;
 import condition.value.NumericalValue;
 import condition.value.Value;
+import query.common.DeterminableCommonQuery;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
-public class DurationPerCaseQuery extends CommonQuery {
+public class DurationPerCaseQuery extends DeterminableCommonQuery {
 
     private static String conditionAttribute = "(extract(epoch from max(t.time_stamp)) - extract(epoch from min(t.time_stamp)))/60";
 
@@ -68,5 +68,12 @@ public class DurationPerCaseQuery extends CommonQuery {
 
     private String getAllDurationPerCase() {
         return String.format("select %s as element from %s as t group by caseid", DurationPerCaseQuery.conditionAttribute, this.getSelectFrom());
+    }
+
+    @Override
+    public HashMap<String, String> getBoundQueries() {
+        return new HashMap<>() {{
+            put(DurationPerCaseQuery.conditionAttribute, getMinMaxDurationPerCase());
+        }};
     }
 }

@@ -1,7 +1,8 @@
-package query.common;
+package query.common.custom;
 
 import analysis.variation.VariationType;
 import condition.*;
+import query.common.DeterminableCommonQuery;
 import query.common.abstract_custom.CompareQuery;
 import query.common.abstract_custom.CustomQuery;
 import query.common.abstract_custom.IntervalQuery;
@@ -13,7 +14,7 @@ import java.util.List;
 /**
  *
  */
-public class CaseIdQuery extends CommonQuery {
+public class CaseIdQuery extends DeterminableCommonQuery {
 
     private static String conditionAttribute = "t.caseid";
 
@@ -70,5 +71,12 @@ public class CaseIdQuery extends CommonQuery {
 
     private String getMinMaxCaseId() {
         return String.format("select min(%s) as minimum, max(%s) as maximum from %s as t", CaseIdQuery.conditionAttribute, CaseIdQuery.conditionAttribute, this.getSelectFrom());
+    }
+
+    @Override
+    public HashMap<String, String> getBoundQueries() {
+        return new HashMap<>() {{
+            put(CaseIdQuery.conditionAttribute, getMinMaxCaseId());
+        }};
     }
 }

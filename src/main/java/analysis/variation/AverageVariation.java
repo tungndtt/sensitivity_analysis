@@ -1,5 +1,6 @@
 package analysis.variation;
 
+import analysis.Pair;
 import query.common.CommonQuery;
 import java.sql.ResultSet;
 import java.util.Collections;
@@ -8,7 +9,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
+ * Implementation of average variation, which varies the average distance between values
+ * Progress:
+ * repeat(numberOfIterations):
+ *      value = value -/+ avg_dist * gamma
+ *      calcDiff( query(origin) , query(value) )
  *
+ * @author Tung Doan
  */
 public class AverageVariation extends Variation{
 
@@ -29,7 +36,6 @@ public class AverageVariation extends Variation{
 
     private LinkedList<Comparable> getAllElements(String attribute) {
         String query = this.getCommonQuery().getQueryForVariation(attribute, this.getType());
-        System.out.println(query);
         if(query == null) {
             return null;
         }

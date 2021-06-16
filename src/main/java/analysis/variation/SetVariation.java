@@ -1,11 +1,20 @@
 package analysis.variation;
 
+import analysis.Pair;
 import condition.Condition;
 import condition.value.SetValue;
 import query.common.CommonQuery;
 import java.sql.ResultSet;
 import java.util.*;
 
+/**
+ * Implementation of the set variation, which varies the set-value
+ * Progress:
+ * repeat(numberOfIterations):
+ *
+ *
+ * @author Tung Doan
+ */
 public class SetVariation extends Variation {
 
     private int numberOfIterations;
@@ -68,6 +77,9 @@ public class SetVariation extends Variation {
                 part.setValue1(this.unit);
                 LinkedList<Number> changingSizes = new LinkedList<>();
                 LinkedList<Double> changingRates = new LinkedList<>();
+
+                changingRates.add(0.0);
+                changingSizes.add(0);
 
                 SetValue setValue = (SetValue) condition.getValue();
                 List<Object> originalElements = (List<Object>) setValue.getValue();

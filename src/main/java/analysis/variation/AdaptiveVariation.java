@@ -1,5 +1,6 @@
 package analysis.variation;
 
+import analysis.Pair;
 import condition.Condition;
 import condition.value.DateValue;
 import condition.value.IntervalValue;
@@ -10,7 +11,11 @@ import java.sql.ResultSet;
 import java.util.*;
 
 /**
- *
+ * Implementation of adaptive variation, which adapts the variation size based on changing rate of previous step
+ * Progress:
+ * repeat(numberOfIterations):
+ *      value = value +/- initialUnit * alpha * (1 - changing_rate)
+ *      calcDiff( query(origin) , query(value) )
  *
  * @author Tung Doan
  */
@@ -92,6 +97,9 @@ public class AdaptiveVariation extends Variation {
                     part.setValue1(1);
                     LinkedList<Number> changingSizes = new LinkedList<>();
                     LinkedList<Double> changingRates = new LinkedList<>();
+
+                    changingRates.add(0.0);
+                    changingSizes.add(0);
 
                     Class type = originalValue.getValue().getClass();
                     Number size = this.initialUnit;
@@ -177,6 +185,9 @@ public class AdaptiveVariation extends Variation {
                     LinkedList<Double> changingRates = new LinkedList<>();
                     LinkedList<Number> changingSizes = new LinkedList<>();
 
+                    changingRates.add(0.0);
+                    changingSizes.add(0);
+
                     Class type = ((Value[])originalValue.getValue())[0].getValue().getClass();
                     Number size = this.initialUnit;
 
@@ -210,6 +221,7 @@ public class AdaptiveVariation extends Variation {
                     part.setValue3(changingRates);
                     negative.setValue3(part);
 
+                    System.out.println(condition.getValue().toString());
                     condition.setValue(originalValue);
 
                     Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();

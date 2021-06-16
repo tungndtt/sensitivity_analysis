@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
-
 import db_connection.DbConnection;
 import org.deckfour.xes.extension.std.XConceptExtension;
 import org.deckfour.xes.extension.std.XOrganizationalExtension;
@@ -18,22 +17,22 @@ import org.deckfour.xes.info.XLogInfoFactory;
 import org.deckfour.xes.model.*;
 
 /**
- * @author Tung Doan
- *
  * Huge thanks to Dr.Alexander Seeliger
  * XLogUtil class extracts the information from event log and saves into the database
  * It supports event log files in format .xes.gz or .xes
+ *
+ * @author Tung Doan
  */
 public class XLogUtil {
 
     private static String[] supportedFiles = {".xes.gz", ".xes"};
 
     /**
-     * @author Dr.Alexander Seeliger
-     *
      * Reads a log from the file system. (xes and xes.gz files are supported)
      * @param filePath
      * @return parsed XLog instance
+     *
+     * @author Dr.Alexander Seeliger
      */
     private static XLog parseLog(String filePath) {
         XesXmlParser parser = null;
@@ -59,6 +58,11 @@ public class XLogUtil {
         }
     }
 
+    /**
+     * Get appropriate SQL-type for XAttribute
+     * @param attribute
+     * @return string SQL-type
+     */
     private static String getTypeOfAttribute(XAttribute attribute) {
         if(attribute instanceof XAttributeBoolean) {
             return "boolean";
@@ -81,9 +85,9 @@ public class XLogUtil {
     }
 
     /**
-     *
+     * Get value from provided XAttribute-instance
      * @param attribute
-     * @return
+     * @return value of XAttribute-instance
      */
     private static Object getValueOfAttribute(XAttribute attribute) {
         if(attribute instanceof XAttributeBoolean) {
@@ -108,9 +112,9 @@ public class XLogUtil {
     }
 
     /**
-     *
+     * Insert the event log from provided file path into Postgresql database
      * @param filePath
-     * @return
+     * @return true if insertion is successful; otherwise, false
      */
     public static boolean insertIntoDatabase(String filePath) {
         XLog xlog = XLogUtil.parseLog(filePath);
@@ -201,9 +205,9 @@ public class XLogUtil {
     }
 
     /**
-     *
+     * Get the file name from the provided file path
      * @param filePath
-     * @return
+     * @return string file name
      */
     private static String getFileName(String filePath) {
         String[] splices = filePath.split("/");
@@ -218,11 +222,11 @@ public class XLogUtil {
     }
 
     /**
-     *
+     * Get string with number-times repeated and separated by separator
      * @param repeater
      * @param separator
      * @param number
-     * @return desired string with number-times repeated and separated by separator
+     * @return desired string
      */
     private static String repeat(String repeater, String separator, int number) {
         if(number > 0) {

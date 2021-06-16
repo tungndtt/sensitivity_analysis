@@ -1,12 +1,13 @@
-package query.common;
+package query.common.custom;
 
 import analysis.variation.VariationType;
+import query.common.CommonQuery;
 import query.common.abstract_custom.CustomQuery;
 import query.common.abstract_custom.SetQuery;
 import java.util.HashMap;
 import java.util.List;
 
-public class ActivityQuery extends CommonQuery{
+public class ActivityQuery extends CommonQuery {
 
     private static String conditionAttribute = "t.activity";
 

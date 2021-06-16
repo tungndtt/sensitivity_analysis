@@ -1,5 +1,6 @@
 package analysis.variation;
 
+import analysis.Pair;
 import condition.Condition;
 import condition.value.DateValue;
 import condition.value.IntervalValue;
@@ -11,7 +12,13 @@ import java.sql.ResultSet;
 import java.util.LinkedList;
 
 /**
+ * Implementation the naive variation, which varies fixed size after each iteration
+ * Progress:
+ * repeat(numberOfIterations):
+ *      value = value +/- unit
+ *      calcDiff( query(origin) , query(value) )
  *
+ * @author Tung Doan
  */
 public class NaiveVariation extends Variation{
 
@@ -106,6 +113,9 @@ public class NaiveVariation extends Variation{
                     LinkedList<Number> changingSizes = new LinkedList<>();
                     LinkedList<Double> changingRates = new LinkedList<>();
 
+                    changingRates.add(0.0);
+                    changingSizes.add(0);
+
                     Value obj = condition.getValue().decrease(this.unit);
                     int iterations = 0;
                     negative.setValue2(-1);
@@ -171,6 +181,9 @@ public class NaiveVariation extends Variation{
                     LinkedList<Double> changingRates = new LinkedList<>();
                     LinkedList<Number> changingSizes = new LinkedList<>();
 
+                    changingRates.add(0.0);
+                    changingSizes.add(0);
+
                     Value new_value = condition.getValue().decrease(this.unit, this.unit);
                     Value[] obj = (Value[]) new_value.getValue();
                     int iterations = 0;
@@ -187,13 +200,13 @@ public class NaiveVariation extends Variation{
                         new_value = condition.getValue().decrease(this.unit, this.unit);
                         obj = (Value[]) new_value.getValue();
                         condition.setValue(new_value);
-                        iterations++;
                     }
 
                     part.setValue2(changingSizes);
                     part.setValue3(changingRates);
                     negative.setValue3(part);
 
+                    System.out.println(condition.getValue().toString());
                     condition.setValue(originValue);
 
                     Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
@@ -230,7 +243,6 @@ public class NaiveVariation extends Variation{
                         new_value = condition.getValue().increase(left == null ? 0 : left, right == null ? 0 : right);
                         condition.setValue(new_value);
                         obj = (Value[]) new_value.getValue();
-                        ++iterations;
                     }
 
                     part.setValue2(changingSizes);

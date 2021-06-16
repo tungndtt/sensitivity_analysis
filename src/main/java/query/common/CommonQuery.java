@@ -3,6 +3,7 @@ package query.common;
 import analysis.variation.VariationType;
 import condition.Condition;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  *
@@ -75,5 +76,26 @@ public abstract class CommonQuery {
 			}
 		}
 		return null;
+	}
+
+	public LinkedList<Condition> retrieveAllConditionsWithValue() {
+		LinkedList<Condition> conditions = new LinkedList<>();
+
+		LinkedList<Condition> queue = new LinkedList<>();
+		queue.add(this.condition);
+
+		while (queue.size() > 0) {
+			Condition condition = queue.removeFirst();
+			if(condition.getAttribute() != null) {
+				conditions.add(condition);
+			}
+			if(condition.getSubConditions() != null) {
+				for(Condition subCondition : condition.getSubConditions()) {
+					queue.add(subCondition);
+				}
+			}
+		}
+
+		return conditions;
 	}
 }

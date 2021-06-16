@@ -1,9 +1,8 @@
-package query.common;
+package query.common.custom;
 
 import analysis.variation.VariationType;
 import condition.*;
-import condition.value.DateValue;
-import condition.value.IntervalValue;
+import query.common.DeterminableCommonQuery;
 import query.common.abstract_custom.CompareQuery;
 import query.common.abstract_custom.CustomQuery;
 import query.common.abstract_custom.IntervalQuery;
@@ -11,7 +10,7 @@ import query.common.abstract_custom.IntervalQuery;
 import java.util.Date;
 import java.util.HashMap;
 
-public class TimestampQuery extends CommonQuery {
+public class TimestampQuery extends DeterminableCommonQuery {
 
     private static String conditionAttribute = "t.time_stamp";
 
@@ -59,5 +58,12 @@ public class TimestampQuery extends CommonQuery {
 
     private String getAllTimestamps() {
         return String.format("select %s as element from %s as t", TimestampQuery.conditionAttribute, this.getSelectFrom());
+    }
+
+    @Override
+    public HashMap<String, String> getBoundQueries() {
+        return new HashMap<>() {{
+            put(TimestampQuery.conditionAttribute, getMinMaxTimestamp());
+        }};
     }
 }
