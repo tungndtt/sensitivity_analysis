@@ -21,7 +21,6 @@ public class CasePerVariantMetric extends Metric{
     public Object analyze() {
         if(this.analysisQuery != null && this.analysisQuery.getCommonQuery() != null && this.getDatabaseConnection() != null) {
             String query = this.analysisQuery.getQuery();
-            //System.out.println(query);
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
                 HashMap<String, Integer> variantDistribution = new HashMap<>();
@@ -42,6 +41,13 @@ public class CasePerVariantMetric extends Metric{
     public double calculateDiff(Object obj1, Object obj2) {
         HashMap<String, Integer> o1 = (HashMap<String, Integer>) obj1;
         HashMap<String, Integer> o2 = (HashMap<String, Integer>) obj2;
+
+        if(o1.size() == 0 && o2.size() == 0) {
+            return 0.0;
+        }
+        else if(o1.size() == 0 || o2.size() == 0) {
+            return 1.0;
+        }
 
         HashMap<String, int[]> variants = new HashMap<>();
         int numberOfCases_1 = 0, numberOfCases_2 = 0;
@@ -72,6 +78,8 @@ public class CasePerVariantMetric extends Metric{
             p2[n-1] = val[1]*1.0/numberOfCases_2;
             --n;
         }
+
+
 
         double diff = CasePerVariantMetric.jensenShannonDivergence(p1, p2);
 

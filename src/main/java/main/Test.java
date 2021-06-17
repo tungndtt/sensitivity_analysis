@@ -1,6 +1,7 @@
 package main;
 
 import analysis.Pair;
+import analysis.determinator.Determination;
 import analysis.metric.CasePerVariantMetric;
 import analysis.metric.CaseVarianceMetric;
 import analysis.metric.Metric;
@@ -41,6 +42,7 @@ public class Test {
         // Run test
         //Test.testPlotting(Test.testAverageVariation(commonQuery, metric));
 
+        /*
         // Check runtime
         BenchMark benchMark = new BenchMark();
         benchMark.setFunction(() -> {
@@ -48,6 +50,9 @@ public class Test {
         });
         long runtime = benchMark.runCounter(1);
         System.out.println(runtime);
+         */
+
+        Test.printSufficientRange(0.35, 0.02, 30, (DeterminableCommonQuery) commonQuery, metric);
     }
 
     private enum CommonQueryType {
@@ -297,6 +302,28 @@ public class Test {
                     System.out.println("Iteration " + (++count) + str + " by " + value.toString() + " has changing rate = " + diff.toString());
                 }
             }
+        }
+    }
+
+    private static void printSufficientRange(double differenceBound, double differenceTolerance, Number precisionTolerance, DeterminableCommonQuery determinableCommonQuery, Metric metric) {
+        Determination determination = new Determination();
+        determination.setDeterminableCommonQuery(determinableCommonQuery);
+        determination.setMetric(metric);
+        metric.setCommonQuery(determinableCommonQuery);
+        determination.setDifferenceBound(differenceBound);
+        determination.setTolerance(differenceTolerance, precisionTolerance);
+
+        Condition condition = determinableCommonQuery.retrieveAllConditionsWithValue().getFirst();
+
+        LinkedList<Pair<String, Integer, Object[]>> result = determination.determine(condition.getAttribute());
+
+        for(Pair<String, Integer, Object[]> pair : result) {
+            System.out.println(pair.getValue1());
+            System.out.println(pair.getValue2() > 0 ? "Increasing ..." : "Decreasing ...");
+
+            Object[] objects = pair.getValue3();
+            System.out.println("Minimal variation size " + objects[1].toString() +  " has difference= " + objects[0].toString());
+            System.out.println("Maximal variation size " + objects[3].toString() +  " has difference= " + objects[2].toString());
         }
     }
 }

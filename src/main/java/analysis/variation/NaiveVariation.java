@@ -41,7 +41,7 @@ public class NaiveVariation extends Variation{
             return null;
         }
         try {
-            System.out.println(query);
+            //System.out.println(query);
             ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
             Object[] range = new Object[2];
 
