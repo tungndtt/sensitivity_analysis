@@ -7,10 +7,10 @@ import analysis.metric.CaseVarianceMetric;
 import analysis.metric.Metric;
 import analysis.metric.SpecificActivityTransitionPerCaseMetric;
 import analysis.variation.*;
-import condition.ComparisionType;
-import condition.Condition;
-import main.benchmark.BenchMark;
+import component.condition.ComparisionType;
+import component.condition.Condition;
 import main.plot.Plot;
+import query.analysis.SpecificActivityTransitionQuery;
 import query.common.*;
 import query.common.custom.*;
 import xlog.XLogUtil;
@@ -31,16 +31,19 @@ public class Test {
     private static String tableName = "log_ieee";
 
     public static void main(String[] args) throws ParseException {
+        // Test import event log
+        //Test.testInsertingEventLog();
+
 
         // Create common query and metric
         CommonQueryType commonQueryType = CommonQueryType.TIMESTAMP_INTERVAL;
         CommonQuery commonQuery = Test.getCommonQuery(commonQueryType);
 
-        MetricType metricType = MetricType.CASE_VARIANT_METRIC;
+        MetricType metricType = MetricType.SPECIFIC_ACTIVITY_TRANSITION_METRIC;
         Metric metric = Test.getMetric(metricType);
 
         // Run test
-        //Test.testPlotting(Test.testAverageVariation(commonQuery, metric));
+        Test.testPlotting(Test.testAdaptiveVariation(commonQuery, metric));
 
         /*
         // Check runtime
@@ -52,7 +55,8 @@ public class Test {
         System.out.println(runtime);
          */
 
-        Test.printSufficientRange(0.35, 0.02, 30, (DeterminableCommonQuery) commonQuery, metric);
+        //Test.printSufficientRange(0.226, 0.005, 30, (DeterminableCommonQuery) commonQuery, metric);
+
     }
 
     private enum CommonQueryType {
@@ -110,7 +114,7 @@ public class Test {
             // common query - duration
             case DURATION_COMPARE:
                 // greater than a month
-                commonQuery = new DurationPerCaseQuery(tableName, 60*24*45, ComparisionType.GT);
+                commonQuery = new DurationPerCaseQuery(tableName, 60*24*25, ComparisionType.GT);
                 break;
             case DURATION_INTERVAL:
                 // within 0.5-4 months
@@ -164,8 +168,9 @@ public class Test {
             // specific activity transition time in cases metric
             case SPECIFIC_ACTIVITY_TRANSITION_METRIC:
                 metric = new SpecificActivityTransitionPerCaseMetric();
-                ((SpecificActivityTransitionPerCaseMetric) metric).setSpecificActivities("SRM: Created", "Clear Invoice");
+                ((SpecificActivityTransitionPerCaseMetric) metric).setSpecificActivities("Record Invoice Receipt", "Clear Invoice");
                 ((SpecificActivityTransitionPerCaseMetric) metric).setMode(SpecificActivityTransitionPerCaseMetric.Mode.SEPARATE);
+                ((SpecificActivityTransitionPerCaseMetric) metric).setAnalysisMode(SpecificActivityTransitionQuery.Mode.ORDER);
                 break;
         }
         return metric;
@@ -173,7 +178,9 @@ public class Test {
 
     // Test
     private static void testInsertingEventLog() {
-        boolean success = XLogUtil.insertIntoDatabase("C:/Users/Tung Doan/Downloads/log_IEEE.xes.gz");
+        String log_ieee = "C:/Users/Tung Doan/Downloads/log_IEEE.xes.gz";
+        String bpi2012 = "C:/Users/Tung Doan/Downloads/BPI_Challenge_2012.xes.gz";
+        boolean success = XLogUtil.insertIntoDatabase(bpi2012);
         if (success) {
             System.out.println("Successfully importing the event log!");
         }
@@ -190,7 +197,7 @@ public class Test {
         naiveVariation.setUnitAndNumberOfIterations(100, 150);
 
         Condition condition = naiveVariation.getVaryingConditions().getFirst();
-        return naiveVariation.vary(condition.getAttribute());
+        return naiveVariation.vary(condition.getAttribute().toString());
     }
 
     // Test
@@ -202,7 +209,7 @@ public class Test {
         averageVariation.setDifferenceBound(60*24*30);
 
         Condition condition = averageVariation.getVaryingConditions().getFirst();
-        return averageVariation.vary(condition.getAttribute());
+        return averageVariation.vary(condition.getAttribute().toString());
     }
 
     // Test
@@ -214,7 +221,7 @@ public class Test {
         adaptiveVariation.setInitialUnitAndAlpha(100, 1.1);
 
         Condition condition = adaptiveVariation.getVaryingConditions().getFirst();
-        return adaptiveVariation.vary(condition.getAttribute());
+        return adaptiveVariation.vary(condition.getAttribute().toString());
     }
 
     // Test
@@ -225,7 +232,7 @@ public class Test {
         setVariation.setNumberOfIterationsAndUnit(50, 1);
 
         Condition condition = setVariation.getVaryingConditions().getFirst();
-        return setVariation.vary(condition.getAttribute());
+        return setVariation.vary(condition.getAttribute().toString());
     }
 
     private static void testPlotting(LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> information) {
@@ -315,7 +322,7 @@ public class Test {
 
         Condition condition = determinableCommonQuery.retrieveAllConditionsWithValue().getFirst();
 
-        LinkedList<Pair<String, Integer, Object[]>> result = determination.determine(condition.getAttribute());
+        LinkedList<Pair<String, Integer, Object[]>> result = determination.determine(condition.getAttribute().toString());
 
         for(Pair<String, Integer, Object[]> pair : result) {
             System.out.println(pair.getValue1());

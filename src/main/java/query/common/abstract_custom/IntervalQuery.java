@@ -1,12 +1,13 @@
 package query.common.abstract_custom;
 
-import condition.Condition;
-import condition.InIntervalCondition;
-import condition.NotCondition;
-import condition.value.DateValue;
-import condition.value.IntervalValue;
-import condition.value.NumericalValue;
-import condition.value.Value;
+import component.attribute.Attribute;
+import component.condition.Condition;
+import component.condition.InIntervalCondition;
+import component.condition.NotCondition;
+import component.value.DateValue;
+import component.value.IntervalValue;
+import component.value.NumericalValue;
+import component.value.Value;
 import java.util.Date;
 
 /**
@@ -35,10 +36,10 @@ public class IntervalQuery extends CustomQuery {
             }
             Condition condition = null;
             if(inside) {
-                condition = new InIntervalCondition(this.getAttribute(), value);
+                condition = new InIntervalCondition(new Attribute(this.getAttribute(), null), value);
             }
             else {
-                condition = new NotCondition(null, new InIntervalCondition(this.getAttribute(), value));
+                condition = new NotCondition(null, new InIntervalCondition(new Attribute(this.getAttribute(), null), value));
             }
 
             this.setCondition(condition);

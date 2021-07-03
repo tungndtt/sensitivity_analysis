@@ -1,7 +1,8 @@
 package query.common.custom;
 
 import analysis.variation.VariationType;
-import condition.*;
+import component.condition.ComparisionType;
+import component.condition.*;
 import query.common.DeterminableCommonQuery;
 import query.common.abstract_custom.CompareQuery;
 import query.common.abstract_custom.CustomQuery;

@@ -1,11 +1,12 @@
 package analysis.variation;
 
 import analysis.Pair;
-import condition.Condition;
-import condition.value.DateValue;
-import condition.value.IntervalValue;
-import condition.value.NumericalValue;
-import condition.value.Value;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import component.condition.Condition;
+import component.value.DateValue;
+import component.value.IntervalValue;
+import component.value.NumericalValue;
+import component.value.Value;
 import query.common.CommonQuery;
 import java.sql.ResultSet;
 import java.util.*;
@@ -21,10 +22,13 @@ import java.util.*;
  */
 public class AdaptiveVariation extends Variation {
 
+    @JsonProperty("iteration")
     private int numberOfIterations;
 
+    @JsonProperty("initial unit")
     private Number initialUnit;
 
+    @JsonProperty("scale")
     private double alpha;
 
     public AdaptiveVariation() {
@@ -82,7 +86,7 @@ public class AdaptiveVariation extends Variation {
 
         int condIdx = 1;
         for(Condition condition : conditions) {
-            if(condition.getAttribute().equals(attribute)) {
+            if(condition.getAttribute().toString().equals(attribute)) {
                 Value originalValue = condition.getValue();
                 Object base = this.getMetric().analyze();
 

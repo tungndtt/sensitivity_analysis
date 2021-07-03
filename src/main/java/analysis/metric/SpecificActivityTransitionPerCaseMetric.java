@@ -24,13 +24,19 @@ public class SpecificActivityTransitionPerCaseMetric extends Metric{
     private Mode mode;
 
     public SpecificActivityTransitionPerCaseMetric() {
-        super("Calculate the difference in transition time between 2 specific activities per case metric");
+        super(MetricType.SATPCM);
         this.analysisQuery = new SpecificActivityTransitionQuery();
     }
 
     public void setSpecificActivities(String startActivity, String endActivity) {
         this.startActivity = startActivity;
         this.endActivity = endActivity;
+    }
+
+    public void setAnalysisMode(SpecificActivityTransitionQuery.Mode mode) {
+        if(this.getAnalysisQuery() != null) {
+            ((SpecificActivityTransitionQuery) this.getAnalysisQuery()).setMode(mode);
+        }
     }
 
     public void setMode(Mode mode) {

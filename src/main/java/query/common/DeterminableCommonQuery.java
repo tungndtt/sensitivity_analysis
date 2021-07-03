@@ -1,10 +1,13 @@
 package query.common;
 
-import condition.Condition;
+import component.condition.Condition;
 
 import java.util.HashMap;
 
 public abstract class DeterminableCommonQuery extends CommonQuery{
+
+    public DeterminableCommonQuery(){}
+
     public DeterminableCommonQuery(String queryName, String selectFrom) {
         super(queryName, selectFrom);
     }

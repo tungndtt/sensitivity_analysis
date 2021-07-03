@@ -1,10 +1,12 @@
 package query.common.custom;
 
 import analysis.variation.VariationType;
-import condition.*;
-import condition.value.IntervalValue;
-import condition.value.NumericalValue;
-import condition.value.Value;
+import component.attribute.Attribute;
+import component.condition.*;
+import component.condition.*;
+import component.value.IntervalValue;
+import component.value.NumericalValue;
+import component.value.Value;
 import query.common.DeterminableCommonQuery;
 
 import java.util.HashMap;
@@ -24,10 +26,10 @@ public class DurationPerCaseQuery extends DeterminableCommonQuery {
         IntervalValue value = new IntervalValue(_interval);
 
         if(inside) {
-            condition = new InIntervalCondition(DurationPerCaseQuery.conditionAttribute, value);
+            condition = new InIntervalCondition(new Attribute(DurationPerCaseQuery.conditionAttribute, null), value);
         }
         else {
-            condition = new NotCondition(null, new InIntervalCondition(DurationPerCaseQuery.conditionAttribute, value));
+            condition = new NotCondition(null, new InIntervalCondition(new Attribute(DurationPerCaseQuery.conditionAttribute, null), value));
         }
 
         this.setCondition(condition);
@@ -38,7 +40,7 @@ public class DurationPerCaseQuery extends DeterminableCommonQuery {
         this.setAttributeValueSetQueriesHashMap();
 
         NumericalValue value = new NumericalValue(number);
-        CompareCondition compareCondition = new CompareCondition(DurationPerCaseQuery.conditionAttribute, value, comparisionType);
+        CompareCondition compareCondition = new CompareCondition(new Attribute(DurationPerCaseQuery.conditionAttribute, null), value, comparisionType);
 
         this.setCondition(compareCondition);
     }

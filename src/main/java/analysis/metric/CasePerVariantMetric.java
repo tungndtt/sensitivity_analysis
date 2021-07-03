@@ -12,7 +12,7 @@ import java.util.HashMap;
  */
 public class CasePerVariantMetric extends Metric{
     public CasePerVariantMetric() {
-        super("Calculate difference based on distribution of case activities variants");
+        super(MetricType.CPVM);
         this.analysisQuery = new CasesPerVariantQuery();
     }
 

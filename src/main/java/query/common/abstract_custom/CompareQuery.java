@@ -1,10 +1,11 @@
 package query.common.abstract_custom;
 
-import condition.CompareCondition;
-import condition.ComparisionType;
-import condition.value.DateValue;
-import condition.value.NumericalValue;
-import condition.value.Value;
+import component.attribute.Attribute;
+import component.condition.CompareCondition;
+import component.condition.ComparisionType;
+import component.value.DateValue;
+import component.value.NumericalValue;
+import component.value.Value;
 
 import java.util.Date;
 
@@ -23,7 +24,7 @@ public class CompareQuery extends CustomQuery {
             _value = new DateValue(value);
         }
         if(_value != null) {
-            CompareCondition compareCondition = new CompareCondition(this.getAttribute(), _value, comparisionType);
+            CompareCondition compareCondition = new CompareCondition(new Attribute(this.getAttribute(), null), _value, comparisionType);
             this.setCondition(compareCondition);
         }
     }

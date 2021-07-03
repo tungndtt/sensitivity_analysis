@@ -2,7 +2,10 @@ package analysis.variation;
 
 import analysis.Pair;
 import analysis.metric.Metric;
-import condition.Condition;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import component.condition.*;
 import db_connection.DbConnection;
 import query.common.CommonQuery;
 import java.sql.Connection;
@@ -13,8 +16,16 @@ import java.util.LinkedList;
  *
  * @author Tung Doan
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = JsonTypeInfo.As.EXTERNAL_PROPERTY)
+@JsonSubTypes(value = {
+        @JsonSubTypes.Type(value = NaiveVariation.class, name = "naive"),
+        @JsonSubTypes.Type(value = AverageVariation.class, name = "average"),
+        @JsonSubTypes.Type(value = AdaptiveVariation.class, name = "adaptive"),
+        @JsonSubTypes.Type(value = SetVariation.class, name = "set")
+})
 public abstract class Variation {
 
+    @JsonProperty("type")
     private VariationType type;
 
     private CommonQuery commonQuery;

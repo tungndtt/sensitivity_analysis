@@ -1,8 +1,8 @@
 package analysis.variation;
 
 import analysis.Pair;
-import condition.Condition;
-import condition.value.SetValue;
+import component.condition.Condition;
+import component.value.SetValue;
 import query.common.CommonQuery;
 import java.sql.ResultSet;
 import java.util.*;
@@ -70,7 +70,7 @@ public class SetVariation extends Variation {
         LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> result = new LinkedList<>();
         int condIdx = 1;
         for(Condition condition : conditions) {
-            if(condition.getAttribute().equals(attribute)) {
+            if(condition.getAttribute().toString().equals(attribute)) {
                 Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
                 positive.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
                 Pair<Number, LinkedList<Number>, LinkedList<Double>> part = new Pair<>();

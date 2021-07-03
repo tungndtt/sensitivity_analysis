@@ -19,7 +19,7 @@ public class CaseVarianceMetric extends Metric{
     private double[] coefficients;
 
     public CaseVarianceMetric() {
-        super("Calculate the variance (difference) per case metric");
+        super(MetricType.CVM);
         this.analysisQuery = new CaseInfoQuery();
     }
 

@@ -1,10 +1,11 @@
 package query.common.abstract_custom;
 
-import condition.Condition;
-import condition.InSetCondition;
-import condition.NotCondition;
-import condition.value.SetElementType;
-import condition.value.SetValue;
+import component.attribute.Attribute;
+import component.condition.Condition;
+import component.condition.InSetCondition;
+import component.condition.NotCondition;
+import component.value.SetElementType;
+import component.value.SetValue;
 import java.util.List;
 
 /**
@@ -36,10 +37,10 @@ public class SetQuery extends CustomQuery {
                 SetValue value = new SetValue(elements, elementType);
                 Condition condition = null;
                 if(inside) {
-                    condition = new InSetCondition(this.getAttribute(), value);
+                    condition = new InSetCondition(new Attribute(this.getAttribute(), null), value);
                 }
                 else {
-                    condition = new NotCondition(null, new InSetCondition(this.getAttribute(), value));
+                    condition = new NotCondition(null, new InSetCondition(new Attribute(this.getAttribute(), null), value));
                 }
 
                 this.setCondition(condition);

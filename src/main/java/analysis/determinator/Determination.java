@@ -2,11 +2,11 @@ package analysis.determinator;
 
 import analysis.Pair;
 import analysis.metric.Metric;
-import condition.Condition;
-import condition.value.DateValue;
-import condition.value.IntervalValue;
-import condition.value.NumericalValue;
-import condition.value.Value;
+import component.condition.Condition;
+import component.value.DateValue;
+import component.value.IntervalValue;
+import component.value.NumericalValue;
+import component.value.Value;
 import db_connection.DbConnection;
 import query.common.DeterminableCommonQuery;
 import java.sql.ResultSet;
@@ -122,8 +122,8 @@ public class Determination {
         Object base = this.metric.analyze();
 
         Object[][] forIteration = {
-                {originValue, bound[1], 1},
-                {bound[0], originValue, -1}
+                {originValue.getValue(), bound[1], 1},
+                {bound[0], originValue.getValue(), -1}
         };
 
         for(Object[] iteration : forIteration) {

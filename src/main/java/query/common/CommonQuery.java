@@ -1,7 +1,7 @@
 package query.common;
 
 import analysis.variation.VariationType;
-import condition.Condition;
+import component.condition.Condition;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -17,7 +17,9 @@ public abstract class CommonQuery {
 	private Condition condition;
 
 	private HashMap<String, HashMap<VariationType, String>> attributeValueSetQueries;
-	
+
+	public CommonQuery(){}
+
 	public CommonQuery(String queryName, String selectFrom) {
 		this.queryName = queryName;
 		this.selectFrom = selectFrom;

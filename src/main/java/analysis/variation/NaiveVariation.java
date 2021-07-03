@@ -1,11 +1,12 @@
 package analysis.variation;
 
 import analysis.Pair;
-import condition.Condition;
-import condition.value.DateValue;
-import condition.value.IntervalValue;
-import condition.value.NumericalValue;
-import condition.value.Value;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import component.condition.Condition;
+import component.value.DateValue;
+import component.value.IntervalValue;
+import component.value.NumericalValue;
+import component.value.Value;
 import query.common.CommonQuery;
 import java.util.Date;
 import java.sql.ResultSet;
@@ -22,8 +23,10 @@ import java.util.LinkedList;
  */
 public class NaiveVariation extends Variation{
 
+    @JsonProperty("unit")
     private Number unit;
 
+    @JsonProperty("iteration")
     private int numberOfIterations;
 
     public NaiveVariation() {
@@ -98,7 +101,7 @@ public class NaiveVariation extends Variation{
         int condIdx = 1;
 
         for(Condition condition : conditions) {
-            if(condition.getAttribute().equals(attribute)) {
+            if(condition.getAttribute().toString().equals(attribute)) {
                 Value originValue = condition.getValue();
                 this.getMetric().setCommonQuery(this.getCommonQuery());
                 Object base = this.getMetric().analyze();

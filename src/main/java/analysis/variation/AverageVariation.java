@@ -1,6 +1,7 @@
 package analysis.variation;
 
 import analysis.Pair;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import query.common.CommonQuery;
 import java.sql.ResultSet;
 import java.util.Collections;
@@ -19,10 +20,13 @@ import java.util.LinkedList;
  */
 public class AverageVariation extends Variation{
 
+    @JsonProperty("scale")
     private double gamma;
 
+    @JsonProperty("iteration")
     private int numberOfIterations;
 
+    @JsonProperty("distance bound")
     private Number differenceBound;
 
     public AverageVariation() {
