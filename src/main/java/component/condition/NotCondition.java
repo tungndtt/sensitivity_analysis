@@ -1,11 +1,12 @@
 package component.condition;
 
 import component.attribute.Attribute;
-
 import java.util.LinkedList;
 
 
 public class NotCondition extends Condition {
+
+	public NotCondition(){}
 
 	public NotCondition(Attribute attribute, Condition reversedCondition) {
 		super(attribute, null, new LinkedList<>(), ConditionType.NOT);

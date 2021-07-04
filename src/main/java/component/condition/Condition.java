@@ -31,7 +31,7 @@ public abstract class Condition {
 	@JsonProperty("type")
 	private ConditionType type;
 
-	@JsonProperty("toAnalyze")
+	@JsonProperty("analysis condition")
 	private boolean toAnalyze;
 
 	public Condition(){}

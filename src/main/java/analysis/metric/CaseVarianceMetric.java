@@ -1,5 +1,6 @@
 package analysis.metric;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import query.analysis.CaseInfoQuery;
 import query.model.CaseInfo;
 import java.sql.ResultSet;
@@ -16,6 +17,7 @@ public class CaseVarianceMetric extends Metric{
     /**
      * coefficients = [alpha, beta, theta, gamma] with alpha + beta + theta + gamma = 1.0
      */
+    @JsonProperty("coefficients")
     private double[] coefficients;
 
     public CaseVarianceMetric() {
@@ -27,7 +29,6 @@ public class CaseVarianceMetric extends Metric{
     public Object analyze() {
         if(this.analysisQuery != null && this.analysisQuery.getCommonQuery() != null && this.getDatabaseConnection() != null) {
             String query = this.analysisQuery.getQuery();
-            //System.out.println(query);
             try {
                 ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
                 HashMap<Integer, double[]> cases = new HashMap<>();

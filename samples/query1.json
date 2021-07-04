@@ -1,0 +1,108 @@
+{
+  "query":  {
+    "select": [
+      {
+        "attribute": "t1.*"
+      }
+    ],
+    "table": "log_ieee",
+    "table select": true,
+    "table alias": "t1",
+    "join": {
+      "type": "right join",
+      "selection":  {
+        "select": [
+          {
+            "attribute": "caseid"
+          }
+        ],
+        "table select": true,
+        "table": "log_ieee",
+        "table alias": "t",
+        "group by": [
+          {
+            "attribute": "caseid"
+          }
+        ],
+        "having": {
+          "type": "in interval",
+          "attribute": {
+            "attribute": "(extract(epoch from max(t.time_stamp)) - extract(epoch from min(t.time_stamp)))/60"
+          },
+          "value": {
+            "type": "interval",
+            "value": [
+              {
+                "type": "number",
+                "value": 21600.0
+              },
+              {
+                "type": "number",
+                "value": 172800.0
+              }
+            ]
+          },
+          "analysis condition": true
+        },
+        "alias": "t2"
+      },
+      "on": {
+        "type": "compare",
+        "attribute": {
+          "attribute": "t1.caseid"
+        },
+        "other": {
+          "attribute": "t2.caseid"
+        },
+        "compareType": "="
+      }
+    }
+  },
+
+  "action": {
+    "type": "variation",
+    "attribute": {
+      "attribute": "(extract(epoch from max(t.time_stamp)) - extract(epoch from min(t.time_stamp)))/60"
+    },
+    "variation": {
+      "type": "adaptive",
+      "iteration": 60,
+      "initial unit": 100,
+      "scale": 1.1
+    },
+    "get-range query": {
+      "select": [
+        {
+          "attribute": "min(t.duration)",
+          "alias": "minimum"
+        },
+        {
+          "attribute": "max(t.duration)",
+          "alias": "maximum"
+        }
+      ],
+      "from": {
+        "select": [
+          {
+            "attribute": "(extract(epoch from max(t.time_stamp)) - extract(epoch from min(t.time_stamp)))/60",
+            "alias": "duration"
+          }
+        ],
+        "table": "log_ieee",
+        "table select": true,
+        "table alias": "t",
+        "group by":[
+          {
+            "attribute": "caseid"
+          }
+        ],
+        "alias": "t"
+      }
+    }
+  },
+
+  "metric": {
+    "type": "CVM",
+    "coefficients": [0.25, 0.25, 0.25, 0.25]
+  }
+}

@@ -1,15 +1,10 @@
 package analysis.metric;
 
-import analysis.variation.AdaptiveVariation;
-import analysis.variation.AverageVariation;
-import analysis.variation.NaiveVariation;
-import analysis.variation.SetVariation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import db_connection.DbConnection;
 import query.analysis.AnalysisQuery;
-import query.analysis.CasesPerVariantQuery;
 import query.common.CommonQuery;
 import java.sql.Connection;
 
@@ -20,7 +15,7 @@ import java.sql.Connection;
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = JsonTypeInfo.As.EXTERNAL_PROPERTY)
 @JsonSubTypes(value = {
-        @JsonSubTypes.Type(value = CasesPerVariantQuery.class, name = "CPVM"),
+        @JsonSubTypes.Type(value = CasePerVariantMetric.class, name = "CPVM"),
         @JsonSubTypes.Type(value = CaseVarianceMetric.class, name = "CVM"),
         @JsonSubTypes.Type(value = SpecificActivityTransitionPerCaseMetric.class, name = "SATPCM")
 })

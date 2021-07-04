@@ -1,0 +1,111 @@
+{
+  "query": {
+    "select": [
+      {
+        "attribute": "*"
+      }
+    ],
+    "table": "log_ieee",
+    "table select": true,
+    "where": {
+      "type": "not",
+      "subConditions": [
+        {
+          "type": "and",
+          "subConditions": [
+            {
+              "type": "in set",
+              "attribute": {
+                "attribute": "activity"
+              },
+              "value": {
+                "type": "set",
+                "value": ["SRM: Created", "SRM: Complete"],
+                "element type": "string"
+              }
+            },
+            {
+              "type": "in set",
+              "attribute": {
+                "attribute": "resource"
+              },
+              "value": {
+                "type": "set",
+                "value": ["batch_00", "user_000"],
+                "element type": "string"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "set operation": {
+      "type": "union",
+      "other": {
+        "select": [
+          {
+            "attribute": "t.*"
+          }
+        ],
+        "table": "log_ieee",
+        "table select": true,
+        "table alias": "t",
+        "where": {
+          "type": "not",
+          "subConditions": [
+            {
+              "type": "in interval",
+              "attribute": {
+                "attribute": "time_stamp"
+              },
+              "value": {
+                "type": "interval",
+                "value": [
+                  {
+                    "type": "date",
+                    "value": "2017-06-15"
+                  },
+                  {
+                    "type": "date",
+                    "value": "2018-01-12"
+                  }
+                ]
+              },
+              "analysis condition": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  "action": {
+    "type": "variation",
+    "attribute": {
+      "attribute": "time_stamp"
+    },
+    "variation": {
+      "type": "adaptive",
+      "iteration": 60,
+      "initial unit": 80,
+      "scale": 1.1
+    },
+    "get-range query": {
+      "select": [
+        {
+          "attribute": "min(time_stamp)",
+          "alias": "minimum"
+        },
+        {
+          "attribute": "max(time_stamp)",
+          "alias": "maximum"
+        }
+      ],
+      "table": "log_ieee",
+      "table select": true
+    }
+  },
+
+  "metric": {
+    "type": "CPVM"
+  }
+}

@@ -1,5 +1,7 @@
 package analysis.metric;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import query.analysis.SpecificActivityTransitionQuery;
 import query.model.SpecificActivityTransition;
 import java.sql.ResultSet;
@@ -14,13 +16,37 @@ import java.util.HashMap;
  */
 public class SpecificActivityTransitionPerCaseMetric extends Metric{
 
-    private String startActivity, endActivity;
+    @JsonProperty("start")
+    private String startActivity;
+
+    @JsonProperty("end")
+    private  String endActivity;
 
     public enum Mode {
-        SEPARATE,
-        AGGREGATE
+        SEPARATE("separate"),
+        AGGREGATE("aggregate");
+
+        String mode;
+
+        Mode(String mode) {
+            this.mode = mode;
+        }
+
+        @JsonCreator
+        public static Mode forValue(String mode) {
+            if(mode.equals(SEPARATE.mode)) {
+                return SEPARATE;
+            }
+            else if(mode.equals(AGGREGATE.mode)) {
+                return AGGREGATE;
+            }
+            else {
+                return null;
+            }
+        }
     }
 
+    @JsonProperty("mode")
     private Mode mode;
 
     public SpecificActivityTransitionPerCaseMetric() {

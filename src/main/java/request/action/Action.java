@@ -3,6 +3,7 @@ package request.action;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import component.attribute.Attribute;
 import query.common.CommonQuery;
 import analysis.metric.Metric;
 
@@ -15,6 +16,9 @@ public abstract class Action {
 
     @JsonProperty("type")
     private ActionType type;
+
+    @JsonProperty("attribute")
+    private Attribute attribute;
 
     private CommonQuery commonQuery;
 
@@ -30,6 +34,10 @@ public abstract class Action {
 
     public CommonQuery getCommonQuery() {
         return this.commonQuery;
+    }
+
+    public Attribute getAttribute() {
+        return this.attribute;
     }
 
     public Metric getMetric() {

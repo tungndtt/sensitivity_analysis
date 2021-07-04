@@ -7,6 +7,8 @@ import java.util.List;
 
 public class OrCondition extends Condition {
 
+	public OrCondition(){}
+
 	public OrCondition(Attribute attribute, List<Condition> subConditions) {
 		super(attribute, null, subConditions, ConditionType.OR);
 	}

@@ -1,12 +1,9 @@
 package request.action;
 
 import analysis.determinator.Determination;
-import analysis.metric.Metric;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import component.attribute.Attribute;
-import query.common.CommonQuery;
 import query.common.DeterminableCommonQuery;
-import request.Query;
+import request.query.Selection;
 
 import java.util.HashMap;
 
@@ -17,7 +14,7 @@ public class DeterminationAction extends Action {
         @Override
         public HashMap<String, String> getBoundQueries() {
             return new HashMap<>(){{
-                put(attribute.toString(), boundQuery.getQuery());
+                put(getAttribute().toString(), boundQuery.getQuery());
             }};
         }
 
@@ -27,11 +24,8 @@ public class DeterminationAction extends Action {
         }
     }
 
-    @JsonProperty("attribute")
-    private Attribute attribute;
-
     @JsonProperty("bound query")
-    private Query boundQuery;
+    private Selection boundQuery;
 
     @JsonProperty("difference bound")
     private double differenceBound;
@@ -52,6 +46,6 @@ public class DeterminationAction extends Action {
         this.getMetric().setCommonQuery(determinationQuery);
         determination.setDifferenceBound(differenceBound);
         determination.setTolerance(differenceTolerance, precisionTolerance);
-        return determination.determine(this.attribute.toString());
+        return determination.determine(this.getAttribute().toString());
     }
 }

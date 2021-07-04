@@ -6,8 +6,13 @@ import component.value.Value;
 
 public class CompareCondition extends Condition {
 
-	@JsonProperty("type")
+	@JsonProperty("compareType")
 	private ComparisionType compareOperation;
+
+	@JsonProperty("other")
+	private Attribute other;
+
+	public CompareCondition(){}
 	
 	public CompareCondition(Attribute attribute, Value value, ComparisionType compareOperation) {
 		super(attribute, value, null, ConditionType.COMPARISION);
@@ -25,7 +30,12 @@ public class CompareCondition extends Condition {
 	@Override
 	public String getCondition() {
 		if(this.compareOperation != null) {
-			return this.getAttribute().toString() + " " + this.compareOperation.getType() + " " + this.getValue().toString();
+			if(this.getValue() != null) {
+				return this.getAttribute().toString() + " " + this.compareOperation.getType() + " " + this.getValue().toString();
+			}
+			else {
+				return this.getAttribute().toString() + " " + this.compareOperation.getType() + " " + this.other.toString();
+			}
 		}
 		else {
 			return null;

@@ -5,6 +5,8 @@ import component.value.Value;
 
 public class InSetCondition extends Condition {
 
+	public InSetCondition() {}
+
 	public InSetCondition(Attribute attribute, Value value) {
 		super(attribute, value, null, ConditionType.IN_SET);
 	}

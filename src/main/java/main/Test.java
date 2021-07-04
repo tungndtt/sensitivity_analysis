@@ -7,13 +7,18 @@ import analysis.metric.CaseVarianceMetric;
 import analysis.metric.Metric;
 import analysis.metric.SpecificActivityTransitionPerCaseMetric;
 import analysis.variation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import component.condition.ComparisionType;
 import component.condition.Condition;
 import main.plot.Plot;
 import query.analysis.SpecificActivityTransitionQuery;
 import query.common.*;
 import query.common.custom.*;
+import request.Request;
 import xlog.XLogUtil;
+
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,15 +40,19 @@ public class Test {
         //Test.testInsertingEventLog();
 
 
+    /*
         // Create common query and metric
-        CommonQueryType commonQueryType = CommonQueryType.TIMESTAMP_INTERVAL;
+        CommonQueryType commonQueryType = CommonQueryType.DURATION_INTERVAL;
         CommonQuery commonQuery = Test.getCommonQuery(commonQueryType);
 
-        MetricType metricType = MetricType.SPECIFIC_ACTIVITY_TRANSITION_METRIC;
+        MetricType metricType = MetricType.CASE_VARIANCE_METRIC;
         Metric metric = Test.getMetric(metricType);
 
         // Run test
         Test.testPlotting(Test.testAdaptiveVariation(commonQuery, metric));
+
+
+
 
         /*
         // Check runtime
@@ -57,6 +66,15 @@ public class Test {
 
         //Test.printSufficientRange(0.226, 0.005, 30, (DeterminableCommonQuery) commonQuery, metric);
 
+
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            File file = new File("D:\\Spring\\sensitve_analysis\\samples\\query2.json");
+            Request request = objectMapper.readValue(file, Request.class);
+            Test.testPlotting((LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>>) request.action.getResult());
+        } catch (IOException e) {
+            System.out.println(e);
+        }
     }
 
     private enum CommonQueryType {

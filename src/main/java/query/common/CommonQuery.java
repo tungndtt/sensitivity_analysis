@@ -55,7 +55,7 @@ public abstract class CommonQuery {
 		return this.condition;
 	}
 
-	protected void setAttributeValueSetQueries(HashMap<String, HashMap<VariationType, String>> attributeValueSetQueries) {
+	public void setAttributeValueSetQueries(HashMap<String, HashMap<VariationType, String>> attributeValueSetQueries) {
 		this.attributeValueSetQueries = attributeValueSetQueries;
 	}
 	

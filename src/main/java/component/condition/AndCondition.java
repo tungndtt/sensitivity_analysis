@@ -1,11 +1,12 @@
 package component.condition;
 
 import component.attribute.Attribute;
-
 import java.util.Iterator;
 import java.util.List;
 
 public class AndCondition extends Condition {
+
+	public AndCondition(){}
 
 	public AndCondition(Attribute attribute, List<Condition> subConditions) {
 		super(attribute, null, subConditions, ConditionType.AND);

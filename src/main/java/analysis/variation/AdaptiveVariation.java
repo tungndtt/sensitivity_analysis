@@ -45,7 +45,6 @@ public class AdaptiveVariation extends Variation {
         if(query == null) {
             return null;
         }
-
         try {
             ResultSet resultSet = this.getDatabaseConnection().prepareStatement(query).executeQuery();
             Object[] result = new Object[2];
@@ -78,7 +77,7 @@ public class AdaptiveVariation extends Variation {
         Object[] minMaxRange = this.getMinMaxRange(attribute);
 
         LinkedList<Condition> conditions = this.getVaryingConditions();
-        if(conditions == null || this.getMetric() == null) {
+        if(conditions == null || this.getMetric() == null || minMaxRange == null) {
             return null;
         }
 
@@ -206,6 +205,7 @@ public class AdaptiveVariation extends Variation {
                         condition.setValue(new_value);
                         Object variedBase = this.getMetric().analyze();
 
+
                         double calcDiff = this.getMetric().calculateDiff(base, variedBase);
 
                         changingRates.add(calcDiff);
@@ -225,7 +225,6 @@ public class AdaptiveVariation extends Variation {
                     part.setValue3(changingRates);
                     negative.setValue3(part);
 
-                    System.out.println(condition.getValue().toString());
                     condition.setValue(originalValue);
 
                     Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
