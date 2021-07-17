@@ -1,6 +1,6 @@
 package request.action;
 
-import analysis.determinator.Determination;
+import analysis.determination.Determinator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import query.common.DeterminableCommonQuery;
 import request.query.Selection;
@@ -38,14 +38,14 @@ public class DeterminationAction extends Action {
 
     @Override
     public Object getResult() {
-        Determination determination = new Determination();
+        Determinator determinator = new Determinator();
         DeterminationQuery determinationQuery = new DeterminationQuery();
-        determination.setDeterminableCommonQuery(determinationQuery);
+        determinator.setDeterminableCommonQuery(determinationQuery);
         determinationQuery.setCondition(this.getCommonQuery().getCondition());
-        determination.setMetric(this.getMetric());
+        determinator.setMetric(this.getMetric());
         this.getMetric().setCommonQuery(determinationQuery);
-        determination.setDifferenceBound(differenceBound);
-        determination.setTolerance(differenceTolerance, precisionTolerance);
-        return determination.determine(this.getAttribute().toString());
+        determinator.setDifferenceBound(differenceBound);
+        determinator.setTolerance(differenceTolerance, precisionTolerance);
+        return determinator.determine(this.getAttribute().toString());
     }
 }

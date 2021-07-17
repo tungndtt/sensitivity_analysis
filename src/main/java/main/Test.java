@@ -1,24 +1,21 @@
 package main;
 
 import analysis.Pair;
-import analysis.determinator.Determination;
+import analysis.determination.Determinator;
+import analysis.determination.Score;
 import analysis.metric.CasePerVariantMetric;
 import analysis.metric.CaseVarianceMetric;
 import analysis.metric.Metric;
 import analysis.metric.SpecificActivityTransitionPerCaseMetric;
 import analysis.variation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import component.condition.ComparisionType;
 import component.condition.Condition;
 import main.plot.Plot;
 import query.analysis.SpecificActivityTransitionQuery;
 import query.common.*;
 import query.common.custom.*;
-import request.Request;
 import xlog.XLogUtil;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -40,16 +37,17 @@ public class Test {
         //Test.testInsertingEventLog();
 
 
-    /*
+
         // Create common query and metric
-        CommonQueryType commonQueryType = CommonQueryType.DURATION_INTERVAL;
+        CommonQueryType commonQueryType = CommonQueryType.DURATION_COMPARE;
         CommonQuery commonQuery = Test.getCommonQuery(commonQueryType);
 
-        MetricType metricType = MetricType.CASE_VARIANCE_METRIC;
+        MetricType metricType = MetricType.SPECIFIC_ACTIVITY_TRANSITION_METRIC;
         Metric metric = Test.getMetric(metricType);
 
+        LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result = Test.testAdaptiveVariation(commonQuery, metric);
         // Run test
-        Test.testPlotting(Test.testAdaptiveVariation(commonQuery, metric));
+        Test.testPlotting(result);
 
 
 
@@ -66,7 +64,7 @@ public class Test {
 
         //Test.printSufficientRange(0.226, 0.005, 30, (DeterminableCommonQuery) commonQuery, metric);
 
-
+        /*
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             File file = new File("D:\\Spring\\sensitve_analysis\\samples\\query2.json");
@@ -75,6 +73,9 @@ public class Test {
         } catch (IOException e) {
             System.out.println(e);
         }
+         */
+
+        Test.calculateScore(result);
     }
 
     private enum CommonQueryType {
@@ -132,11 +133,11 @@ public class Test {
             // common query - duration
             case DURATION_COMPARE:
                 // greater than a month
-                commonQuery = new DurationPerCaseQuery(tableName, 60*24*25, ComparisionType.GT);
+                commonQuery = new DurationQuery(tableName, 60*24*25, ComparisionType.GT);
                 break;
             case DURATION_INTERVAL:
                 // within 0.5-4 months
-                commonQuery = new DurationPerCaseQuery(tableName, new double[]{60*24*15, 60*24*30*4}, true);
+                commonQuery = new DurationQuery(tableName, new double[]{60*24*15 - 25000, 60*24*30*4 + 25000}, true);
                 break;
 
             // common query - caseid
@@ -208,7 +209,7 @@ public class Test {
     }
 
     // Test
-    private static LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> testNaiveVariation(CommonQuery commonQuery, Metric metric) {
+    private static LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> testNaiveVariation(CommonQuery commonQuery, Metric metric) {
         NaiveVariation naiveVariation = new NaiveVariation();
         naiveVariation.setCommonQuery(commonQuery);
         naiveVariation.setMetric(metric);
@@ -219,7 +220,7 @@ public class Test {
     }
 
     // Test
-    private static LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> testAverageVariation(CommonQuery commonQuery, Metric metric) {
+    private static LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> testAverageVariation(CommonQuery commonQuery, Metric metric) {
         AverageVariation averageVariation = new AverageVariation();
         averageVariation.setCommonQuery(commonQuery);
         averageVariation.setMetric(metric);
@@ -231,19 +232,19 @@ public class Test {
     }
 
     // Test
-    private static LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> testAdaptiveVariation(CommonQuery commonQuery, Metric metric) {
+    private static LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> testAdaptiveVariation(CommonQuery commonQuery, Metric metric) {
         AdaptiveVariation adaptiveVariation = new AdaptiveVariation();
         adaptiveVariation.setCommonQuery(commonQuery);
         adaptiveVariation.setMetric(metric);
-        adaptiveVariation.setNumberOfIterations(60);
-        adaptiveVariation.setInitialUnitAndAlpha(100, 1.1);
+        adaptiveVariation.setNumberOfIterations(80);
+        adaptiveVariation.setInitialUnitAndAlpha(100, 1.06);
 
         Condition condition = adaptiveVariation.getVaryingConditions().getFirst();
         return adaptiveVariation.vary(condition.getAttribute().toString());
     }
 
     // Test
-    private static LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> testSetVariation(CommonQuery commonQuery, Metric metric) {
+    private static LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> testSetVariation(CommonQuery commonQuery, Metric metric) {
         SetVariation setVariation = new SetVariation();
         setVariation.setCommonQuery(commonQuery);
         setVariation.setMetric(metric);
@@ -253,102 +254,98 @@ public class Test {
         return setVariation.vary(condition.getAttribute().toString());
     }
 
-    private static void testPlotting(LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> information) {
+    private static void testPlotting(LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> information) {
         if(information == null) return;
 
         List<Number[]> points = new LinkedList<>();
 
         String title = null;
 
-        for(Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> part : information) {
+        for(Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> part : information) {
             title = "Varying " + part.getValue1();
-            int sign = part.getValue2();
 
-            Number number = part.getValue3().getValue1();
-            Iterator<Number> numbers = part.getValue3().getValue2().iterator();
-            Iterator<Double> diff_values = part.getValue3().getValue3().iterator();
+            Iterator<Number> variationSizes = part.getValue2().getValue1().iterator();
+            Iterator<Double> changingRates = part.getValue2().getValue2().iterator();
 
-            while(numbers.hasNext()) {
-                Number n = numbers.next();
-                Double diff = diff_values.next();
+            while(variationSizes.hasNext()) {
+                Number vs = variationSizes.next();
+                Double cr = changingRates.next();
 
-                Number value = null;
-                if(n instanceof Double || number instanceof Double) {
-                    value = n.doubleValue()*number.doubleValue()*sign;
-                }
-                else if(n instanceof Long || number instanceof Long){
-                    value = n.intValue()*number.intValue()*sign;
-                }
-                else if(n instanceof Integer && n instanceof Integer) {
-                    value = n.longValue()*number.longValue()*sign;
-                }
-                else {
-                    System.out.println("Unsupported number type!");
-                    return;
-                }
                 //System.out.println(value + " " +diff);
-                points.add(new Number[]{value, diff});
+                points.add(new Number[]{vs, cr});
             }
         }
         new Plot(title, "changing rate", "variation size", "difference", points).display();
     }
 
-    private static void testPrinting(LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> result) {
+    private static void testPrinting(LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result) {
         if(result != null) {
-            for(Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> part : result) {
+            for(Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> part : result) {
                 System.out.println(part.getValue1());
-                String str = part.getValue2() > 0 ? " increasing " : " decreasing ";
-                System.out.println(str + "....");
+                System.out.println("variation size ~ changing rate ....");
 
-                Number number = part.getValue3().getValue1();
-                Iterator<Number> numbers = part.getValue3().getValue2().iterator();
-                Iterator<Double> diff_values = part.getValue3().getValue3().iterator();
+                Iterator<Number> variationSizes = part.getValue2().getValue1().iterator();
+                Iterator<Double> changingRates = part.getValue2().getValue2().iterator();
 
                 int count = 0;
 
-                while(numbers.hasNext()) {
-                    Number n = numbers.next();
-                    Double diff = diff_values.next();
+                while(variationSizes.hasNext()) {
+                    Number vs = variationSizes.next();
+                    Double cr = changingRates.next();
 
-                    Number value = null;
-                    if(n instanceof Double || number instanceof Double) {
-                        value = n.doubleValue()*number.doubleValue();
-                    }
-                    else if(n instanceof Long || number instanceof Long){
-                        value = n.intValue()*number.intValue();
-                    }
-                    else if(n instanceof Integer && n instanceof Integer) {
-                        value = n.longValue()*number.longValue();
-                    }
-                    else {
-                        System.out.println("Unsupported number type!");
-                        return;
-                    }
-                    System.out.println("Iteration " + (++count) + str + " by " + value.toString() + " has changing rate = " + diff.toString());
+                    System.out.println("Iteration " + (++count) + " varying by " + vs.toString() + " has changing rate = " + cr.toString());
                 }
             }
         }
     }
 
     private static void printSufficientRange(double differenceBound, double differenceTolerance, Number precisionTolerance, DeterminableCommonQuery determinableCommonQuery, Metric metric) {
-        Determination determination = new Determination();
-        determination.setDeterminableCommonQuery(determinableCommonQuery);
-        determination.setMetric(metric);
+        Determinator determinator = new Determinator();
+        determinator.setDeterminableCommonQuery(determinableCommonQuery);
+        determinator.setMetric(metric);
         metric.setCommonQuery(determinableCommonQuery);
-        determination.setDifferenceBound(differenceBound);
-        determination.setTolerance(differenceTolerance, precisionTolerance);
+        determinator.setDifferenceBound(differenceBound);
+        determinator.setTolerance(differenceTolerance, precisionTolerance);
 
         Condition condition = determinableCommonQuery.retrieveAllConditionsWithValue().getFirst();
 
-        LinkedList<Pair<String, Integer, Object[]>> result = determination.determine(condition.getAttribute().toString());
+        LinkedList<Pair<String, Object[]>> result = determinator.determine(condition.getAttribute().toString());
 
-        for(Pair<String, Integer, Object[]> pair : result) {
+        System.out.println(result);
+        for(Pair<String, Object[]> pair : result) {
             System.out.println(pair.getValue1());
-            System.out.println(pair.getValue2() > 0 ? "Increasing ..." : "Decreasing ...");
+            System.out.println("Determining ...");
 
-            Object[] objects = pair.getValue3();
+            Object[] objects = pair.getValue2();
             System.out.println("Minimal variation size " + objects[1].toString() +  " has difference= " + objects[0].toString());
             System.out.println("Maximal variation size " + objects[3].toString() +  " has difference= " + objects[2].toString());
         }
+    }
+
+    private static void calculateScore(LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result) {
+        LinkedList<Number[]> variations = new LinkedList<>();
+
+        Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> pair = result.get(0);
+
+        Iterator<Number> variationSizes = pair.getValue2().getValue1().iterator();
+        Iterator<Double> changingRates = pair.getValue2().getValue2().iterator();
+
+        while(variationSizes.hasNext()) {
+            Number vs = variationSizes.next();
+            Double cr = changingRates.next();
+            variations.add(new Number[]{vs, cr});
+        }
+
+        pair = result.get(1);
+        variationSizes = pair.getValue2().getValue1().iterator();
+        changingRates = pair.getValue2().getValue2().iterator();
+
+        while(variationSizes.hasNext()) {
+            Number vs = variationSizes.next();
+            Double cr = changingRates.next();
+            variations.addFirst(new Number[]{vs, cr});
+        }
+
+        System.out.println("Score = " + Score.calculateScore(variations, 0.95));
     }
 }

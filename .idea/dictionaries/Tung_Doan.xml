@@ -2,6 +2,8 @@
   <dictionary name="Tung Doan">
     <words>
       <w>caseid</w>
+      <w>cndf</w>
+      <w>determinator</w>
       <w>doan</w>
       <w>jdbc</w>
       <w>postgresql</w>

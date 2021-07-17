@@ -70,7 +70,7 @@ public class AverageVariation extends Variation{
     }
 
     @Override
-    public LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> vary(String attribute) {
+    public LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> vary(String attribute) {
         LinkedList<Comparable> elements = this.getAllElements(attribute);
         if(elements.size() < 2) {
             return null;
@@ -98,7 +98,7 @@ public class AverageVariation extends Variation{
         int number = 0;
         while(iterator.hasNext()) {
             Comparable next = iterator.next();
-            Number distance = this.distance(current, next);
+            Number distance = AverageVariation.distance(current, next);
 
             if(distance == null) {
                 return null;
@@ -139,7 +139,7 @@ public class AverageVariation extends Variation{
         return naiveVariation.vary(attribute);
     }
 
-    private Number distance(Object o1, Object o2) {
+    private static Number distance(Object o1, Object o2) {
         if(o1 instanceof Integer) {
             return (Integer) o2 - (Integer) o1;
         }

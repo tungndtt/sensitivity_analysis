@@ -52,13 +52,14 @@ public class SpecificActivityTransitionQuery extends AnalysisQuery{
                     order, order, "( " + this.getCommonQuery().getQuery() + " )", this.startActivity, this.endActivity, this.startActivity, this.endActivity);
         }
         else {
-            String _query = this.getCommonQuery().getQuery();
-            return String.format("select caseid, avg(transition_time) as average_transition_time from ( "
+            return String.format(
+                    "with commonQuery as ( %s )"
+                    + "select caseid, avg(transition_time) as average_transition_time from ( "
                     + "select t1.caseid, (extract(epoch from t2.time_stamp) - extract(epoch from t2.time_stamp))/60 as transition_time from ( "
-                    + "select caseid, rank() over (partition by caseid order by time_stamp) as ranking, time_stamp from %s as t where activity = '%s' ) as t1 "
+                    + "select caseid, rank() over (partition by caseid order by time_stamp) as ranking, time_stamp from commonQuery as t where activity = '%s' ) as t1 "
                     + "inner join ( "
-                    + "select caseid, rank() over (partition by caseid order by time_stamp) as ranking, time_stamp from %s as t where activity = '%s' ) as t2 "
-                    + "on t1.caseid = t2.caseid and t1.ranking=t2.ranking and t1.time_stamp <= t2.time_stamp ) as t group by caseid", "(" + _query + ")", this.startActivity, "(" + _query + ")", this.endActivity);
+                    + "select caseid, rank() over (partition by caseid order by time_stamp) as ranking, time_stamp from commonQuery as t where activity = '%s' ) as t2 "
+                    + "on t1.caseid = t2.caseid and t1.ranking=t2.ranking and t1.time_stamp <= t2.time_stamp ) as t group by caseid", this.getCommonQuery().getQuery() , this.startActivity, this.endActivity);
         }
     }
 }

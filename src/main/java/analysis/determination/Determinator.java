@@ -1,4 +1,4 @@
-package analysis.determinator;
+package analysis.determination;
 
 import analysis.Pair;
 import analysis.metric.Metric;
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class Determination {
+public class Determinator {
 
     private DeterminableCommonQuery determinableCommonQuery;
 
@@ -93,17 +93,17 @@ public class Determination {
         return null;
     }
 
-    public LinkedList<Pair<String, Integer, Object[]>> determine(String attribute) {
+    public LinkedList<Pair<String, Object[]>> determine(String attribute) {
         if(this.determinableCommonQuery == null || this.metric == null) {
             System.out.println("Query or metric is not provided yet!");
             return null;
         }
         Object[] bound = this.getBound(attribute);
 
-        LinkedList<Pair<String, Integer, Object[]>> result = new LinkedList<>();
+        LinkedList<Pair<String, Object[]>> result = new LinkedList<>();
 
         for(Condition condition : this.allConditions) {
-            if(condition.getAttribute().equals(attribute)) {
+            if(condition.getAttribute().toString().equals(attribute)) {
                 Value value = condition.getValue();
                 if(value instanceof NumericalValue || value instanceof DateValue) {
                     this.handleValue(condition, bound, result);
@@ -116,7 +116,7 @@ public class Determination {
         return result;
     }
 
-    private void handleValue(Condition condition, Object[] bound, LinkedList<Pair<String, Integer, Object[]>> result) {
+    private void handleValue(Condition condition, Object[] bound, LinkedList<Pair<String, Object[]>> result) {
         Value originValue = condition.getValue();
 
         Object base = this.metric.analyze();
@@ -129,22 +129,21 @@ public class Determination {
         for(Object[] iteration : forIteration) {
             if(((Comparable) iteration[0]).compareTo(iteration[1]) < 0) {
 
-                Pair<String, Integer, Object[]> pair = new Pair<>();
+                Pair<String, Object[]> pair = new Pair<>();
                 pair.setValue1("Condition: " + condition.getCondition());
-                pair.setValue2((Integer) iteration[2]);
 
                 Object[] object = new Object[4];
 
-                Number max = Determination.subtract(iteration[1], iteration[0]);
-                Number min = Determination.cast(0, max.getClass());
+                Number max = Determinator.subtract(iteration[1], iteration[0]);
+                Number min = Determinator.cast(0, max.getClass());
                 double diff = 0;
-                Number tolerance = Determination.cast(this.precisionTolerance, max.getClass());
+                Number tolerance = Determinator.cast(this.precisionTolerance, max.getClass());
 
                 Value varied_value;
                 Object _varied;
 
-                while(((Comparable) tolerance).compareTo(Determination.subtract(max, min)) < 0) {
-                    Number middle = Determination.divide(Determination.add(min, max), 2);
+                while(((Comparable) tolerance).compareTo(Determinator.subtract(max, min)) < 0) {
+                    Number middle = Determinator.divide(Determinator.add(min, max), 2);
                     varied_value = (Integer) iteration[2] > 0 ? originValue.increase(middle) : originValue.decrease(middle);
                     condition.setValue(varied_value);
                     _varied = this.metric.analyze();
@@ -158,22 +157,22 @@ public class Determination {
                     }
                 }
 
-                object[1] = max;
+                object[1] = (Integer) iteration[2] > 0 ? max : Determinator.reverse(max);
                 varied_value = (Integer) iteration[2] > 0 ? originValue.increase(max, max) : originValue.decrease(max, max);
                 condition.setValue(varied_value);
                 _varied = this.metric.analyze();
                 object[0] = this.metric.calculateDiff(base, _varied);
 
-                max = Determination.subtract(iteration[1], iteration[0]);
-                min = Determination.cast(0, max.getClass());
+                max = Determinator.subtract(iteration[1], iteration[0]);
+                min = Determinator.cast(0, max.getClass());
                 varied_value = (Integer) iteration[2] == 1 ? originValue.increase(max) : originValue.decrease(max);
                 condition.setValue(varied_value);
                 _varied = this.metric.analyze();
                 diff = this.metric.calculateDiff(base, _varied);
 
                 if(Math.abs(this.differenceBound - diff) > this.differenceTolerance) {
-                    while(((Comparable) tolerance).compareTo(Determination.subtract(max, min)) < 0) {
-                        Number middle = Determination.divide(Determination.add(min, max), 2);
+                    while(((Comparable) tolerance).compareTo(Determinator.subtract(max, min)) < 0) {
+                        Number middle = Determinator.divide(Determinator.add(min, max), 2);
                         varied_value = (Integer) iteration[2] > 0 ? originValue.increase(middle) : originValue.decrease(middle);
                         condition.setValue(varied_value);
                         _varied = this.metric.analyze();
@@ -186,54 +185,53 @@ public class Determination {
                             min = middle;
                         }
                     }
-                    object[3] = min;
+                    object[3] = (Integer) iteration[2] > 0 ? min : Determinator.reverse(min);
                     varied_value = (Integer) iteration[2] > 0 ? originValue.increase(min, min) : originValue.decrease(min, min);
                     condition.setValue(varied_value);
                     _varied = this.metric.analyze();
                     object[2] = this.metric.calculateDiff(base, _varied);
                 }
                 else {
-                    object[3] = max;
+                    object[3] = (Integer) iteration[2] > 0 ? max : Determinator.reverse(max);
                     object[2] = diff;
                 }
 
                 condition.setValue(originValue);
-                pair.setValue3(object);
+                pair.setValue2(object);
                 result.add(pair);
             }
         }
     }
 
-    private void handleInterval(Condition condition, Object[] bound, LinkedList<Pair<String, Integer, Object[]>> result) {
+    private void handleInterval(Condition condition, Object[] bound, LinkedList<Pair<String, Object[]>> result) {
 
         Value originValue = condition.getValue();
         Value[] interval = (Value[]) originValue.getValue();
         Object base = this.metric.analyze();
 
-        Number d1 = Determination.subtract(bound[1], interval[1].getValue()), d2 = Determination.subtract(interval[0].getValue(), bound[0]);
+        Number d1 = Determinator.subtract(bound[1], interval[1].getValue()), d2 = Determinator.subtract(interval[0].getValue(), bound[0]);
 
         Number[][] forIteration = {
                 {((Comparable) d1).compareTo(d2) > 0? d1 : d2, 1},
-                {Determination.divide(Determination.subtract(interval[1].getValue(), interval[0].getValue()), 2), -1},
+                {Determinator.divide(Determinator.subtract(interval[1].getValue(), interval[0].getValue()), 2), -1},
         };
-        Number tolerance = Determination.cast(this.precisionTolerance, d1.getClass());
+        Number tolerance = Determinator.cast(this.precisionTolerance, d1.getClass());
 
         for(Number[] iteration : forIteration) {
             if(((Comparable) iteration[0]).compareTo(tolerance) > 0) {
-                Pair<String, Integer, Object[]> pair = new Pair<>();
+                Pair<String, Object[]> pair = new Pair<>();
                 pair.setValue1("Condition: " + condition.getCondition());
-                pair.setValue2(iteration[1].intValue());
 
                 Object[] object = new Object[4];
 
-                Number min = Determination.cast(0, iteration[0].getClass()), max = iteration[0];
+                Number min = Determinator.cast(0, iteration[0].getClass()), max = iteration[0];
                 double diff;
 
                 Value varied_value;
                 Object _varied;
 
-                while(((Comparable) tolerance).compareTo(Determination.subtract(max, min)) < 0) {
-                    Number middle = Determination.divide(Determination.add(min, max), 2);
+                while(((Comparable) tolerance).compareTo(Determinator.subtract(max, min)) < 0) {
+                    Number middle = Determinator.divide(Determinator.add(min, max), 2);
                     varied_value = iteration[1].intValue() > 0 ? originValue.increase(middle, middle) : originValue.decrease(middle, middle);
                     condition.setValue(varied_value);
                     _varied = this.metric.analyze();
@@ -247,14 +245,14 @@ public class Determination {
                     }
                 }
 
-                object[1] = max;
+                object[1] = iteration[1].intValue() > 0 ? max : Determinator.reverse(max);
                 varied_value = iteration[1].intValue() > 0 ? originValue.increase(max, max) : originValue.decrease(max, max);
                 condition.setValue(varied_value);
                 _varied = this.metric.analyze();
                 object[0] = this.metric.calculateDiff(base, _varied);
 
 
-                min = Determination.cast(0, iteration[0].getClass());
+                min = Determinator.cast(0, iteration[0].getClass());
                 max = iteration[0];
                 varied_value = iteration[1].intValue() > 0 ? originValue.increase(max, max) : originValue.decrease(max, max);
                 condition.setValue(varied_value);
@@ -262,8 +260,8 @@ public class Determination {
                 diff = this.metric.calculateDiff(base, _varied);
 
                 if(Math.abs(this.differenceBound - diff) > this.differenceTolerance) {
-                    while(((Comparable) tolerance).compareTo(Determination.subtract(max, min)) < 0) {
-                        Number middle = Determination.divide(Determination.add(min, max), 2);
+                    while(((Comparable) tolerance).compareTo(Determinator.subtract(max, min)) < 0) {
+                        Number middle = Determinator.divide(Determinator.add(min, max), 2);
                         varied_value = iteration[1].intValue() > 0 ? originValue.increase(middle, middle) : originValue.decrease(middle, middle);
                         condition.setValue(varied_value);
                         _varied = this.metric.analyze();
@@ -276,21 +274,20 @@ public class Determination {
                             min = middle;
                         }
                     }
-                    object[3] = min;
+                    object[3] = iteration[1].intValue() > 0 ? min : Determinator.reverse(min);
                     varied_value = iteration[1].intValue() > 0 ? originValue.increase(min, min) : originValue.decrease(min, min);
                     condition.setValue(varied_value);
                     _varied = this.metric.analyze();
                     object[2] = this.metric.calculateDiff(base, _varied);
                 }
                 else {
-                    object[3] = max;
+                    object[3] = iteration[1].intValue() > 0 ? max : Determinator.reverse(max);
                     object[2] = diff;
                 }
 
-
-
                 condition.setValue(originValue);
-                pair.setValue3(object);
+                pair.setValue2(object);
+
                 result.add(pair);
             }
         }
@@ -355,5 +352,18 @@ public class Determination {
         else {
             return null;
         }
+    }
+
+    private static Number reverse(Number number) {
+        if(number instanceof Integer) {
+            return -number.intValue();
+        }
+        else if(number instanceof Double) {
+            return -number.doubleValue();
+        }
+        else if(number instanceof Long) {
+            return -number.longValue();
+        }
+        else return null;
     }
 }

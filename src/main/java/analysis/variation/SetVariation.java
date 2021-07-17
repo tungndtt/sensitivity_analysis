@@ -59,7 +59,7 @@ public class SetVariation extends Variation {
     }
 
     @Override
-    public LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> vary(String attribute) {
+    public LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> vary(String attribute) {
 
         LinkedList<Condition> conditions = this.getVaryingConditions();
 
@@ -67,14 +67,15 @@ public class SetVariation extends Variation {
             return null;
         }
 
-        LinkedList<Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>>> result = new LinkedList<>();
-        int condIdx = 1;
+        LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result = new LinkedList<>();
+
         for(Condition condition : conditions) {
             if(condition.getAttribute().toString().equals(attribute)) {
-                Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
-                positive.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
-                Pair<Number, LinkedList<Number>, LinkedList<Double>> part = new Pair<>();
-                part.setValue1(this.unit);
+                Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
+                positive.setValue1(String.format("condition : %s", condition.getCondition()));
+
+                Pair<LinkedList<Number>, LinkedList<Double>> part = new Pair<>();
+
                 LinkedList<Number> changingSizes = new LinkedList<>();
                 LinkedList<Double> changingRates = new LinkedList<>();
 
@@ -96,7 +97,6 @@ public class SetVariation extends Variation {
                 Object base = this.getMetric().analyze();
 
                 int iterations = 1;
-                positive.setValue2(1);
                 while(elements.size() > 0 && this.numberOfIterations >= iterations) {
                     setValue.increase(this.unit, elements, existed);
                     Object variedBase = this.getMetric().analyze();
@@ -104,27 +104,26 @@ public class SetVariation extends Variation {
                     double diffValue = this.getMetric().calculateDiff(base, variedBase);
                     changingRates.add(diffValue);
 
-                    changingSizes.add(++iterations);
+                    changingSizes.add((++iterations) * this.unit);
                 }
 
-                part.setValue2(changingSizes);
-                part.setValue3(changingRates);
-                positive.setValue3(part);
+                part.setValue1(changingSizes);
+                part.setValue2(changingRates);
+                positive.setValue2(part);
 
                 copied.clear();
                 copied.addAll(originalElements);
                 Collections.shuffle(copied);
                 setValue.setValue(copied);
 
-                Pair<String, Integer, Pair<Number, LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
-                negative.setValue1(String.format("condition %d : %s", condIdx, condition.getCondition()));
+                Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
+                negative.setValue1(String.format("condition : %s", condition.getCondition()));
+
                 part = new Pair<>();
-                part.setValue1(this.unit);
                 changingSizes = new LinkedList<>();
                 changingRates = new LinkedList<>();
 
                 iterations = 1;
-                negative.setValue2(-1);
                 while (copied.size() > 0 && iterations <= this.numberOfIterations && copied.size() > this.unit) {
                     setValue.decrease(this.unit);
                     Object variedBase = this.getMetric().analyze();
@@ -132,18 +131,15 @@ public class SetVariation extends Variation {
                     double diffValue = this.getMetric().calculateDiff(base, variedBase);
                     changingRates.add(diffValue);
 
-                    changingSizes.add(++iterations);
+                    changingSizes.add(-(++iterations) * this.unit);
                 }
-                part.setValue2(changingSizes);
-                part.setValue3(changingRates);
-                negative.setValue3(part);
+                part.setValue1(changingSizes);
+                part.setValue2(changingRates);
+                negative.setValue2(part);
 
                 setValue.setValue(originalElements);
 
                 result.add(positive);
-                result.add(negative);
-
-                condIdx++;
             }
         }
         return result;

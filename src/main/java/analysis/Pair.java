@@ -1,11 +1,9 @@
 package analysis;
 
-public class Pair<V1, V2, V3> {
+public class Pair<V1, V2> {
     private V1 value1;
 
     private V2 value2;
-
-    private V3 value3;
 
     public V1 getValue1() {
         return value1;
@@ -23,15 +21,7 @@ public class Pair<V1, V2, V3> {
         this.value2 = value2;
     }
 
-    public V3 getValue3() {
-        return value3;
-    }
-
-    public void setValue3(V3 value3) {
-        this.value3 = value3;
-    }
-
     public String toString(String prefix1, String prefix2, String prefix3) {
-        return String.format("%s: %s , %s: %s , %s: %s", prefix1, value1.toString(), prefix2, value2.toString(), prefix3, value3.toString());
+        return String.format("%s: %s , %s: %s", prefix1, value1.toString(), prefix2, value2.toString(), prefix3);
     }
 }
