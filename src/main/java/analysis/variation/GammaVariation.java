@@ -8,35 +8,30 @@ import component.value.IntervalValue;
 import component.value.NumericalValue;
 import component.value.Value;
 import query.common.CommonQuery;
+
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
 
-/**
- * Implementation of adaptive variation, which adapts the variation size based on changing rate of previous step
- * Progress:
- * repeat(numberOfIterations):
- *      value = value +/- initialUnit * alpha * (1 - changing_rate)
- *      calcDiff( query(origin) , query(value) )
- *
- * @author Tung Doan
- */
-public class AdaptiveVariation extends Variation {
-
+public class GammaVariation extends Variation {
     @JsonProperty("iteration")
     private int numberOfIterations;
 
-    @JsonProperty("initial unit")
-    private Number initialUnit;
+    @JsonProperty("unit")
+    private Number unit;
 
     @JsonProperty("scale")
     private double alpha;
 
-    public AdaptiveVariation() {
-        super(VariationType.ADAPTIVE);
+    @JsonProperty("threshold")
+    private double threshold;
+
+    public GammaVariation() {
+        super(VariationType.GAMMA);
     }
 
-    public AdaptiveVariation(CommonQuery commonQuery) {
-        super(VariationType.ADAPTIVE);
+    public GammaVariation(CommonQuery commonQuery) {
+        super(VariationType.GAMMA);
         this.setCommonQuery(commonQuery);
     }
 
@@ -66,9 +61,13 @@ public class AdaptiveVariation extends Variation {
         this.numberOfIterations = numberOfIterations;
     }
 
-    public void setInitialUnitAndAlpha(Number initialUnit, double alpha) {
-        this.initialUnit = initialUnit;
+    public void setUnitAndAlpha(Number unit, double alpha) {
+        this.unit = unit;
         this.alpha = alpha;
+    }
+
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
     }
 
     @Override
@@ -99,26 +98,38 @@ public class AdaptiveVariation extends Variation {
                     Class type = originalValue.getValue().getClass();
 
                     functions[0] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
-                        Number size = this.initialUnit;
+                        Number size = this.unit;
 
                         Value variedValue = condition.getValue().decrease(size);
 
                         int iterations = 0;
                         double previousDiff = 0;
                         Number previousSize = 0;
+                        Value previousValue = null;
 
                         while (((Comparable)variedValue.getValue()).compareTo(minMaxRange[0]) >= 0 && iterations < this.numberOfIterations) {
                             condition.setValue(variedValue);
                             Object variedBase = this.getMetric().analyze();
 
                             double calcDiff = this.getMetric().calculateDiff(base, variedBase);
+
+                            while(Math.abs(calcDiff - previousDiff) >= this.threshold && Util.compare(size, this.unit) > 0) {
+                                size = Util.scale(type, size, 0.5);
+
+                                variedValue = previousValue.decrease(size);
+                                condition.setValue(variedValue);
+                                variedBase = this.getMetric().analyze();
+                                calcDiff = this.getMetric().calculateDiff(base, variedBase);
+                            }
+
                             changingRates.add(calcDiff);
 
                             previousSize = Util.add(type, size, previousSize);
                             changingSizes.add(Util.reverse(type, previousSize));
-                            size = Util.scale(type, size, (1 - Math.abs(calcDiff - previousDiff)) * this.alpha);
+                            size = Util.scale(type, size, this.alpha);
 
                             previousDiff = calcDiff;
+                            previousValue = variedValue;
                             variedValue = condition.getValue().decrease(size);
 
                             ++iterations;
@@ -126,25 +137,37 @@ public class AdaptiveVariation extends Variation {
                     };
 
                     functions[1] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
-                        Number size = this.initialUnit;
+                        Number size = this.unit;
                         Value variedValue = condition.getValue().increase(size);
 
                         int iterations = 0;
                         double previousDiff = 0;
                         Number previousSize = 0;
+                        Value previousValue = null;
 
                         while (((Comparable) variedValue.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
                             condition.setValue(variedValue);
                             Object variedBase = this.getMetric().analyze();
 
                             double calcDiff = this.getMetric().calculateDiff(base, variedBase);
+
+                            while(Math.abs(calcDiff - previousDiff) >= this.threshold && Util.compare(size, this.unit) > 0) {
+                                size = Util.scale(type, size, 0.5);
+
+                                variedValue = previousValue.increase(size);
+                                condition.setValue(variedValue);
+                                variedBase = this.getMetric().analyze();
+                                calcDiff = this.getMetric().calculateDiff(base, variedBase);
+                            }
+
                             changingRates.add(calcDiff);
 
                             previousSize = Util.add(type, size, previousSize);
                             changingSizes.add(previousSize);
-                            size = Util.scale(type, size, (1 - Math.abs(calcDiff - previousDiff)) * this.alpha);
+                            size = Util.scale(type, size, this.alpha);
 
                             previousDiff = calcDiff;
+                            previousValue = variedValue;
                             variedValue = condition.getValue().increase(size);
 
                             ++iterations;
@@ -157,13 +180,14 @@ public class AdaptiveVariation extends Variation {
                     Class type = ((Value[])originalValue.getValue())[0].getValue().getClass();
 
                     functions[0] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
-                        Number size = this.initialUnit;
+                        Number size = this.unit;
 
                         Value new_value = condition.getValue().decrease(size, size);
                         Value[] obj = (Value[]) new_value.getValue();
                         int iterations = 0;
                         double previousDiff = 0;
                         Number previousSize = 0;
+                        Value previousValue = null;
 
                         while(iterations < this.numberOfIterations && ((Comparable) obj[0].getValue()).compareTo(obj[1].getValue()) < 0) {
                             condition.setValue(new_value);
@@ -171,14 +195,24 @@ public class AdaptiveVariation extends Variation {
 
                             double calcDiff = this.getMetric().calculateDiff(base, variedBase);
 
+                            while(Math.abs(calcDiff - previousDiff) >= this.threshold && Util.compare(size, this.unit) > 0) {
+                                size = Util.scale(type, size, 0.5);
+
+                                new_value = previousValue.decrease(size, size);
+                                condition.setValue(new_value);
+                                variedBase = this.getMetric().analyze();
+                                calcDiff = this.getMetric().calculateDiff(base, variedBase);
+                            }
+
                             changingRates.add(calcDiff);
 
                             previousSize = Util.add(type, size, previousSize);
                             changingSizes.add(Util.reverse(type, previousSize));
-                            size = Util.scale(type, size, (1 - Math.abs(calcDiff - previousDiff)) * this.alpha);
+                            size = Util.scale(type, size, this.alpha);
 
                             previousDiff = calcDiff;
 
+                            previousValue = new_value;
                             new_value = condition.getValue().decrease(size, size);
                             obj = (Value[]) new_value.getValue();
                             iterations++;
@@ -186,28 +220,55 @@ public class AdaptiveVariation extends Variation {
                     };
 
                     functions[1] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
-                        Number size = this.initialUnit;
-                        Value variedValue = condition.getValue().increase(size);
+                        Number size = this.unit;
 
+                        Value new_value = condition.getValue().increase(size, size);
+                        Value[] obj = (Value[]) new_value.getValue();
                         int iterations = 0;
                         double previousDiff = 0;
                         Number previousSize = 0;
+                        Value previousValue = null;
 
-                        while (((Comparable) variedValue.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
-                            condition.setValue(variedValue);
+                        while(iterations < this.numberOfIterations && (((Comparable) obj[0].getValue()).compareTo(minMaxRange[0]) >= 0 || ((Comparable) obj[1].getValue()).compareTo(minMaxRange[1]) <= 0)) {
+                            condition.setValue(new_value);
                             Object variedBase = this.getMetric().analyze();
 
                             double calcDiff = this.getMetric().calculateDiff(base, variedBase);
+
+                            while(Math.abs(calcDiff - previousDiff) >= this.threshold && Util.compare(size, this.unit) > 0) {
+                                size = Util.scale(type, size, 0.5);
+
+                                new_value = previousValue.increase(size, size);
+                                condition.setValue(new_value);
+                                variedBase = this.getMetric().analyze();
+                                calcDiff = this.getMetric().calculateDiff(base, variedBase);
+                            }
+
                             changingRates.add(calcDiff);
 
                             previousSize = Util.add(type, size, previousSize);
                             changingSizes.add(previousSize);
-                            size = Util.scale(type, size, (1 - Math.abs(calcDiff - previousDiff)) * this.alpha);
+                            size = Util.scale(type, size, this.alpha);
 
                             previousDiff = calcDiff;
-                            variedValue = condition.getValue().increase(size);
 
-                            ++iterations;
+                            Object left = null, right = null;
+                            if(((Comparable) obj[0].getValue()).compareTo(minMaxRange[0]) > 0) {
+                                left = size;
+                            }
+                            if(((Comparable) obj[1].getValue()).compareTo(minMaxRange[1]) < 0) {
+                                right = size;
+                            }
+
+                            if(left == null && right == null) {
+                                break;
+                            }
+
+                            previousValue = new_value;
+                            new_value = condition.getValue().increase(left == null ? 0 : left, right == null ? 0 : right);
+                            obj = (Value[]) new_value.getValue();
+
+                            iterations++;
                         }
                     };
 

@@ -44,6 +44,7 @@ public class TimestampQuery extends DeterminableCommonQuery {
             put(VariationType.NAIVE, getMinMaxTimestamp());
             put(VariationType.AVERAGE, getAllTimestamps());
             put(VariationType.ADAPTIVE, getMinMaxTimestamp());
+            put(VariationType.GAMMA, getMinMaxTimestamp());
         }};
         this.setAttributeValueSetQueries(
                 new HashMap<>() {{

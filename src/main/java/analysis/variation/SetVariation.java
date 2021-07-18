@@ -71,6 +71,58 @@ public class SetVariation extends Variation {
 
         for(Condition condition : conditions) {
             if(condition.getAttribute().toString().equals(attribute)) {
+
+                SetValue setValue = (SetValue) condition.getValue();
+                List<Object> originalElements = (List<Object>) setValue.getValue();
+                Object base = this.getMetric().analyze();
+
+                Util.Functional[] functions = new Util.Functional[2];
+
+                functions[0] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
+                    List<Object> copied = new LinkedList<>();
+                    HashSet<Object> existed = new HashSet<>();
+
+                    copied.addAll(originalElements);
+                    existed.addAll(originalElements);
+                    setValue.setValue(copied);
+
+                    LinkedList<Object> elements = this.getAllElements(attribute);
+                    Collections.shuffle(elements);
+
+                    int iterations = 1;
+                    while(elements.size() > 0 && this.numberOfIterations >= iterations) {
+                        setValue.increase(this.unit, elements, existed);
+                        Object variedBase = this.getMetric().analyze();
+
+                        double diffValue = this.getMetric().calculateDiff(base, variedBase);
+                        changingRates.add(diffValue);
+
+                        changingSizes.add((iterations++) * this.unit);
+                    }
+                    setValue.setValue(originalElements);
+                };
+
+                functions[1] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
+                    int iterations = 1;
+                    List<Object> copied = new LinkedList<>();
+                    copied.addAll(originalElements);
+                    Collections.shuffle(copied);
+                    setValue.setValue(copied);
+                    while (copied.size() > 0 && iterations <= this.numberOfIterations && copied.size() > this.unit) {
+                        setValue.decrease(this.unit);
+                        Object variedBase = this.getMetric().analyze();
+
+                        double diffValue = this.getMetric().calculateDiff(base, variedBase);
+                        changingRates.add(diffValue);
+
+                        changingSizes.add(-(iterations++) * this.unit);
+                    }
+                    setValue.setValue(originalElements);
+                };
+
+                Util.handleFunctions(setValue, condition, result, functions);
+
+                /*
                 Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
                 positive.setValue1(String.format("condition : %s", condition.getCondition()));
 
@@ -140,6 +192,9 @@ public class SetVariation extends Variation {
                 setValue.setValue(originalElements);
 
                 result.add(positive);
+                result.add(negative);
+
+                 */
             }
         }
         return result;

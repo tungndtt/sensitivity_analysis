@@ -104,11 +104,99 @@ public class NaiveVariation extends Variation{
                 this.getMetric().setCommonQuery(this.getCommonQuery());
                 Object base = this.getMetric().analyze();
 
+                Util.Functional[] functions = new Util.Functional[2];
+
                 if(originValue instanceof DateValue || originValue instanceof NumericalValue) {
-                    this.handleValue(originValue, base, condition, minMaxRange, result);
+
+                    Class type = originValue.getValue().getClass();
+
+                    functions[0] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
+                        Value obj = condition.getValue().decrease(this.unit);
+                        int iterations = 0;
+                        while(((Comparable) obj.getValue()).compareTo(minMaxRange[0]) >= 0 && ((Comparable) obj.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
+                            Object variedBase = this.getMetric().analyze();
+
+                            double diffValue = this.getMetric().calculateDiff(base, variedBase);
+                            changingRates.add(diffValue);
+
+                            changingSizes.add(Util.reverse(type, Util.scale(type, this.unit, ++iterations)));
+
+                            obj = condition.getValue().decrease(this.unit);
+                            condition.setValue(obj);
+                        }
+                    };
+
+                    functions[1] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
+                        Value obj = condition.getValue().increase(this.unit);
+                        int iterations = 0;
+                        while(((Comparable) obj.getValue()).compareTo(minMaxRange[0]) >= 0 && ((Comparable) obj.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
+                            Object variedBase = this.getMetric().analyze();
+
+                            double diffValue = this.getMetric().calculateDiff(base, variedBase);
+                            changingRates.add(diffValue);
+
+                            changingSizes.add(Util.scale(type, this.unit, ++iterations));
+
+                            obj = condition.getValue().increase(this.unit);
+                            condition.setValue(obj);
+                        }
+                    };
+
+                    Util.handleFunctions(originValue, condition, result, functions);
                 }
                 else if(originValue instanceof IntervalValue) {
-                    this.handleInterval(originValue, base, condition, minMaxRange, result);
+
+                    Class type = ((Value[])originValue.getValue())[0].getValue().getClass();
+
+                    functions[0] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
+                        Value new_value = condition.getValue().decrease(this.unit, this.unit);
+                        Value[] obj = (Value[]) new_value.getValue();
+                        int iterations = 0;
+                        while(iterations < this.numberOfIterations && ((Comparable) obj[0].getValue()).compareTo(obj[1].getValue()) <= 0) {
+                            Object variedBase = this.getMetric().analyze();
+
+                            double diffValue = this.getMetric().calculateDiff(base, variedBase);
+
+                            changingRates.add(diffValue);
+
+                            changingSizes.add(Util.reverse(type, Util.scale(type, this.unit, ++iterations)));
+
+                            new_value = condition.getValue().decrease(this.unit, this.unit);
+                            obj = (Value[]) new_value.getValue();
+                            condition.setValue(new_value);
+                        }
+                    };
+                    functions[1] = (LinkedList<Number> changingSizes, LinkedList<Double> changingRates) -> {
+                        Value new_value = condition.getValue().increase(this.unit, this.unit);
+                        Value[] obj = (Value[]) new_value.getValue();
+
+                        int iterations = 0;
+                        while(iterations < this.numberOfIterations && (((Comparable) obj[0].getValue()).compareTo(minMaxRange[0]) >= 0 || ((Comparable) obj[1].getValue()).compareTo(minMaxRange[1]) <= 0)) {
+                            Object variedBase = this.getMetric().analyze();
+
+                            double diffValue = this.getMetric().calculateDiff(base, variedBase);
+                            changingRates.add(diffValue);
+
+                            changingSizes.add(Util.scale(type, this.unit, ++iterations));
+
+                            Object left = null, right = null;
+                            if(((Comparable) obj[0].getValue()).compareTo(minMaxRange[0]) > 0) {
+                                left = this.unit;
+                            }
+                            if(((Comparable) obj[1].getValue()).compareTo(minMaxRange[1]) < 0) {
+                                right = this.unit;
+                            }
+
+                            if(left == null && right == null) {
+                                break;
+                            }
+                            new_value = condition.getValue().increase(left == null ? 0 : left, right == null ? 0 : right);
+                            condition.setValue(new_value);
+                            obj = (Value[]) new_value.getValue();
+                        }
+                    };
+
+                    Util.handleFunctions(originValue, condition, result, functions);
                 }
                 else {
                     System.out.println("Unsupported value type for naive variation!");
@@ -117,184 +205,5 @@ public class NaiveVariation extends Variation{
         }
 
         return result;
-    }
-
-    private void handleValue(Value originValue, Object base, Condition condition, Object[] minMaxRange,
-                             LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result) {
-        Class type = originValue.getValue().getClass();
-
-        Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
-        negative.setValue1(String.format("condition : %s", condition.getCondition()));
-
-        Pair<LinkedList<Number>, LinkedList<Double>> part = new Pair<>();
-        LinkedList<Number> changingSizes = new LinkedList<>();
-        LinkedList<Double> changingRates = new LinkedList<>();
-
-        changingRates.add(0.0);
-        changingSizes.add(0);
-
-        Value obj = condition.getValue().decrease(this.unit);
-        int iterations = 0;
-        while(((Comparable) obj.getValue()).compareTo(minMaxRange[0]) >= 0 && ((Comparable) obj.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
-            Object variedBase = this.getMetric().analyze();
-
-            double diffValue = this.getMetric().calculateDiff(base, variedBase);
-            changingRates.add(diffValue);
-
-            changingSizes.add(NaiveVariation.reverse(type, NaiveVariation.scale(type, this.unit, ++iterations)));
-
-            obj = condition.getValue().decrease(this.unit);
-            condition.setValue(obj);
-        }
-
-        part.setValue1(changingSizes);
-        part.setValue2(changingRates);
-        negative.setValue2(part);
-
-        condition.setValue(originValue);
-
-        Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
-        positive.setValue1(String.format("condition : %s", condition.getCondition()));
-
-        part = new Pair<>();
-        changingSizes = new LinkedList<>();
-        changingRates = new LinkedList<>();
-
-        obj = condition.getValue().increase(this.unit);
-        iterations = 0;
-        while(((Comparable) obj.getValue()).compareTo(minMaxRange[0]) >= 0 && ((Comparable) obj.getValue()).compareTo(minMaxRange[1]) <= 0 && iterations < this.numberOfIterations) {
-            Object variedBase = this.getMetric().analyze();
-
-            double diffValue = this.getMetric().calculateDiff(base, variedBase);
-            changingRates.add(diffValue);
-
-            changingSizes.add(NaiveVariation.scale(type, this.unit, ++iterations));
-
-            obj = condition.getValue().increase(this.unit);
-            condition.setValue(obj);
-        }
-
-        condition.setValue(originValue);
-
-        part.setValue1(changingSizes);
-        part.setValue2(changingRates);
-        positive.setValue2(part);
-
-        result.add(positive);
-        result.add(negative);
-    }
-
-    private void handleInterval(Value originValue, Object base, Condition condition, Object[] minMaxRange,
-                                LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result) {
-        Class type = ((Value[])originValue.getValue())[0].getValue().getClass();
-
-        Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> negative = new Pair<>();
-        negative.setValue1(String.format("condition : %s", condition.getCondition()));
-
-        Pair<LinkedList<Number>, LinkedList<Double>> part = new Pair<>();
-        LinkedList<Double> changingRates = new LinkedList<>();
-        LinkedList<Number> changingSizes = new LinkedList<>();
-
-        changingRates.add(0.0);
-        changingSizes.add(0);
-
-        Value new_value = condition.getValue().decrease(this.unit, this.unit);
-        Value[] obj = (Value[]) new_value.getValue();
-        int iterations = 0;
-        while(iterations < this.numberOfIterations && ((Comparable) obj[0].getValue()).compareTo(obj[1].getValue()) <= 0) {
-            Object variedBase = this.getMetric().analyze();
-
-            double diffValue = this.getMetric().calculateDiff(base, variedBase);
-
-            changingRates.add(diffValue);
-
-            changingSizes.add(NaiveVariation.reverse(type, NaiveVariation.scale(type, this.unit, ++iterations)));
-
-            new_value = condition.getValue().decrease(this.unit, this.unit);
-            obj = (Value[]) new_value.getValue();
-            condition.setValue(new_value);
-        }
-
-        part.setValue1(changingSizes);
-        part.setValue2(changingRates);
-        negative.setValue2(part);
-
-        condition.setValue(originValue);
-
-        Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>> positive = new Pair<>();
-        positive.setValue1(String.format("condition : %s", condition.getCondition()));
-
-        part = new Pair<>();
-        changingRates = new LinkedList<>();
-        changingSizes = new LinkedList<>();
-
-        new_value = condition.getValue().increase(this.unit, this.unit);
-        obj = (Value[]) new_value.getValue();
-
-        iterations = 0;
-        while(iterations < this.numberOfIterations && (((Comparable) obj[0].getValue()).compareTo(minMaxRange[0]) >= 0 || ((Comparable) obj[1].getValue()).compareTo(minMaxRange[1]) <= 0)) {
-            Object variedBase = this.getMetric().analyze();
-
-            double diffValue = this.getMetric().calculateDiff(base, variedBase);
-            changingRates.add(diffValue);
-
-            changingSizes.add(NaiveVariation.scale(type, this.unit, ++iterations));
-
-            Object left = null, right = null;
-            if(((Comparable) obj[0].getValue()).compareTo(minMaxRange[0]) > 0) {
-                left = this.unit;
-            }
-            if(((Comparable) obj[1].getValue()).compareTo(minMaxRange[1]) < 0) {
-                right = this.unit;
-            }
-
-            if(left == null && right == null) {
-                break;
-            }
-            new_value = condition.getValue().increase(left == null ? 0 : left, right == null ? 0 : right);
-            condition.setValue(new_value);
-            obj = (Value[]) new_value.getValue();
-        }
-
-        part.setValue1(changingSizes);
-        part.setValue2(changingRates);
-        positive.setValue2(part);
-
-        condition.setValue(originValue);
-
-        result.add(positive);
-        result.add(negative);
-    }
-
-    private static Number scale(Class type, Number unit, int scale) {
-        if(type == Integer.class) {
-            return unit.intValue()*scale;
-        }
-        else if(type == Long.class) {
-            return unit.longValue()*scale;
-        }
-        else if(type == Double.class) {
-            return unit.doubleValue()*scale;
-        }
-        else if(type == Date.class) {
-            return unit.longValue()*scale;
-        }
-        return null;
-    }
-
-    private static Number reverse(Class type, Number unit) {
-        if(type == Integer.class) {
-            return -unit.intValue();
-        }
-        else if(type == Long.class) {
-            return -unit.longValue();
-        }
-        else if(type == Double.class) {
-            return -unit.doubleValue();
-        }
-        else if(type == Date.class) {
-            return -unit.longValue();
-        }
-        return null;
     }
 }

@@ -6,6 +6,7 @@ public enum VariationType {
     NAIVE("naive"), // varying fixed unit
     AVERAGE("average"), // varying unit based on average distance in value set
     ADAPTIVE("adaptive"), // varying unit based on changing rate from previous variation
+    GAMMA("gamma"),
     SET("set"); // varying elements in set
 
     private String type;
@@ -24,6 +25,9 @@ public enum VariationType {
         }
         else if(type.equals(ADAPTIVE.type)) {
             return ADAPTIVE;
+        }
+        else if(type.equals(GAMMA.type)) {
+            return GAMMA;
         }
         else if(type.equals(SET.type)) {
             return SET;

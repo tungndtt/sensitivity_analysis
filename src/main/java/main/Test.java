@@ -39,13 +39,13 @@ public class Test {
 
 
         // Create common query and metric
-        CommonQueryType commonQueryType = CommonQueryType.DURATION_COMPARE;
+        CommonQueryType commonQueryType = CommonQueryType.ACTIVITY_IN_LIST;
         CommonQuery commonQuery = Test.getCommonQuery(commonQueryType);
 
-        MetricType metricType = MetricType.SPECIFIC_ACTIVITY_TRANSITION_METRIC;
+        MetricType metricType = MetricType.CASE_VARIANCE_METRIC;
         Metric metric = Test.getMetric(metricType);
 
-        LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result = Test.testAdaptiveVariation(commonQuery, metric);
+        LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> result = Test.testSetVariation(commonQuery, metric);
         // Run test
         Test.testPlotting(result);
 
@@ -241,6 +241,19 @@ public class Test {
 
         Condition condition = adaptiveVariation.getVaryingConditions().getFirst();
         return adaptiveVariation.vary(condition.getAttribute().toString());
+    }
+
+    // Test
+    private static LinkedList<Pair<String, Pair<LinkedList<Number>, LinkedList<Double>>>> testGammaVariation(CommonQuery commonQuery, Metric metric) {
+        GammaVariation gammaVariation = new GammaVariation();
+        gammaVariation.setCommonQuery(commonQuery);
+        gammaVariation.setMetric(metric);
+        gammaVariation.setNumberOfIterations(60);
+        gammaVariation.setUnitAndAlpha(80, 1.1);
+        gammaVariation.setThreshold(0.03);
+
+        Condition condition = gammaVariation.getVaryingConditions().getFirst();
+        return gammaVariation.vary(condition.getAttribute().toString());
     }
 
     // Test

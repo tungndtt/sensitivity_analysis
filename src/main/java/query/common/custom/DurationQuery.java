@@ -55,6 +55,7 @@ public class DurationQuery extends DeterminableCommonQuery {
             put(VariationType.NAIVE, getMinMaxDurationPerCase());
             put(VariationType.AVERAGE, getAllDurationPerCase());
             put(VariationType.ADAPTIVE, getMinMaxDurationPerCase());
+            put(VariationType.GAMMA, getMinMaxDurationPerCase());
         }};
         this.setAttributeValueSetQueries(
                 new HashMap<>() {{
